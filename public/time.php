@@ -71,6 +71,10 @@ $localDateTime = new LocalDateTime($dateTimeStr);
 
 <h3>LocalDateTime</h3>
     <table>
+         <tr>
+            <td>LocalDateTime Now:</td>
+            <td>"<?= new LocalDateTime() ?>"</td>
+        </tr>
         <tr>
             <td>String to parse:</td>
             <td>"<?= $dateTimeStr ?>"</td>

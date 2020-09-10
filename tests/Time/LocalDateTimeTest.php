@@ -164,6 +164,21 @@ final class LocalDateTimeTest extends TestCase
         $this->assertEquals(-1, $localDateTime3->compareTo($dateTime3));
     }
     
+    public function testCompareDateTo()
+    {
+        $localDateTime1 = new LocalDateTime('2020-01-01 13:37');
+        $dateTime1 = new \DateTime('2020-01-01 13:36');
+        $this->assertEquals(0, $localDateTime1->compareDateTo($dateTime1));
+        
+        $localDateTime2 = new LocalDateTime('2020-01-02 13:37');
+        $dateTime2 = new \DateTime('2020-01-01 13:37');
+        $this->assertEquals(1, $localDateTime2->compareDateTo($dateTime2));
+        
+        $localDateTime3 = new LocalDateTime('2019-12-31 13:37');
+        $dateTime3 = new \DateTime('2020-01-01 13:37');
+        $this->assertEquals(-1, $localDateTime3->compareDateTo($dateTime3));
+    }
+    
     public function testEquals()
     {
         $localDateTime = new LocalDateTime(self::DATETIME_MICRO_STR);

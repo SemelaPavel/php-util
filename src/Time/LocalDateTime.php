@@ -123,16 +123,17 @@ class LocalDateTime extends \DateTime
     
     /**
      * Compares this datetime to another datetime.
-     * The comparsion is based on the datetime in local datetime format
+     * The comparsion is based by default on the datetime in local datetime format
      * with microsecond precision. The time zone is not taken into account.
      * 
      * @param \DateTimeInterface $dateTime DateTime object to compare with.
+     * @param string $format The specific datetime format to use for comparison. 
      * @return int Negative if less, zero if same, positive if greater.
      */
-    public function compareTo(\DateTimeInterface $dateTime)
+    public function compareTo(\DateTimeInterface $dateTime, $format = 'YmdHisu')
     {
-        $thisDateTime = $this->format('YmdHisu');
-        $dateTimeToCompare = $dateTime->format('YmdHisu');
+        $thisDateTime = $this->format($format);
+        $dateTimeToCompare = $dateTime->format($format);
         
         if ($thisDateTime < $dateTimeToCompare) {
             return -1;
@@ -144,6 +145,19 @@ class LocalDateTime extends \DateTime
             return 1;
         }
     }
+
+
+    /**
+     * Compares this datetime to another datetime only by date.
+     * 
+     * @param \DateTimeInterface $dateTime DateTime object to compare with.
+     * @return int Negative if less, zero if same, positive if greater.
+     */
+    public function compareDateTo(\DateTimeInterface $dateTime)
+    {
+        return $this->compareTo($dateTime, 'Ymd');
+    }
+        
     
     /**
      * Checks if this datetime is equal to another datetime.
