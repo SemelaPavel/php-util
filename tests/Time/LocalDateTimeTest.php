@@ -14,84 +14,72 @@ use SemelaPavel\Time\LocalDateTime;
 
 /**
  * @author Pavel Semela <semela_pavel@centrum.cz>
- * @version 2020-07-06
  */
 final class LocalDateTimeTest extends TestCase
 {
-    const DATETIME_MICRO_STR = '2020-07-06 13:37:00.001337';
-    const DATETIME_NORMALIZED = '2020-07-06T13:37:00.001337+01:00';
-    const DATETIME_TONORMALIZE = ' 2020-  07 - 06 T 13 :37 : 00 . 001337  + 02: 00 ';
-    
+    const DATETIME_STR = '2020-07-06 13:37:00.001337';
     const TIMESTAMP = 1594042620;
     
-    const MICRO_FORMAT = 'Y-m-d H:i:s.u';
-    const MIN_FORMAT = 'Y-m-d H:i';
-    
-    protected $timezonePrague;
-    protected $dateTimeMicro;
+    protected $dateTime;
+    protected $tzDefault;
+    protected $tzLocal;
     
     protected function setUp(): void
     {
-        $this->timezonePrague = new \DateTimeZone('Europe/Prague');
+        date_default_timezone_set('UTC');
+                
+        $this->dateTime = new \DateTime(self::DATETIME_STR);
+        $this->tzDefault = new \DateTimeZone('UTC');
+        $this->tzLocal = new \DateTimeZone('Europe/Prague');
+    }
+    
+    public function testLocalTimeZone()
+    {
+        $this->assertEquals($this->tzDefault, LocalDateTime::getLocalTimeZone());
         
-        $this->dateTimeMicro = new \DateTime(
-            self::DATETIME_MICRO_STR,
-            $this->timezonePrague
+        LocalDateTime::setLocalTimeZone($this->tzLocal);
+        
+        $this->assertEquals($this->tzLocal, LocalDateTime::getLocalTimeZone());
+        $this->assertEquals($this->tzLocal, (new \DateTime())->getTimezone());
+    }
+    
+    public function testNow()
+    {
+        $format = 'Y-m-d H:i';
+        
+        $this->assertSame(
+            (new \DateTime())->format($format), 
+            (LocalDateTime::now()->format($format))
+        );
+        
+        $this->assertEquals(
+            new \DateTime((new \DateTime())->format($format)),
+            LocalDateTime::now($format)
         );
     }
     
-    public function testConstruct()
-    {
-        $DateTimeNow = new DateTime();
-        $localDateTimeNow = new LocalDateTime();
-        $this->assertEquals(
-            $DateTimeNow->format(self::MIN_FORMAT), 
-            $localDateTimeNow->format(self::MIN_FORMAT)
-        );
-   
-        $DateTimeNowTz = new DateTime('now', $this->timezonePrague);
-        $localDateTimeNowTz = new LocalDateTime('now', $this->timezonePrague);
-        $this->assertEquals(
-            $DateTimeNowTz->format(self::MIN_FORMAT),
-            $localDateTimeNowTz->format(self::MIN_FORMAT)
-        );
-
-        $dateTime = new \DateTime(self::DATETIME_NORMALIZED);
-        $localDateTime = new LocalDateTime(self::DATETIME_TONORMALIZE);
-        
-        $this->assertEquals(
-            $dateTime->format(self::MICRO_FORMAT), 
-            $localDateTime->format(self::MICRO_FORMAT)
-        );
-    }
-    
-    public function testConstructException()
-    {
-        $this->expectException(DateTimeParseException::class);
-        new LocalDateTime('not a date');
-    }
-    
-    public function testFrom()
+    public function testToday()
     {
         $this->assertEquals(
-            $this->dateTimeMicro->format(self::MICRO_FORMAT), 
-            (LocalDateTime::from($this->dateTimeMicro))->format(self::MICRO_FORMAT)
-        );
-        
-        $this->assertNotEquals(
-            $this->dateTimeMicro->format(self::MICRO_FORMAT), 
-            (LocalDateTime::from($this->dateTimeMicro, false))->format(self::MICRO_FORMAT)
+            new \DateTime((new \DateTime())->format('Y-m-d')),
+            LocalDateTime::today()
         );
     }
     
     public function testOfUnixTimestamp()
     {
         $dateTime = new \DateTime('@' . self::TIMESTAMP);
-        $localDateTime = LocalDateTime::ofUnixTimestamp(self::TIMESTAMP);
         
         $this->assertEquals(
-            $dateTime->format(self::MICRO_FORMAT),
-            $localDateTime->format(self::MICRO_FORMAT)
+            $dateTime,
+            LocalDateTime::ofUnixTimestamp(self::TIMESTAMP)
+        );
+
+        LocalDateTime::setLocalTimeZone($this->tzLocal);
+        
+        $this->assertEquals(
+            $dateTime,
+            LocalDateTime::ofUnixTimestamp(self::TIMESTAMP)    
         );
     }
     
@@ -101,27 +89,31 @@ final class LocalDateTimeTest extends TestCase
         LocalDateTime::ofUnixTimestamp('not a timestamp');
     }
     
+    public function testNormalize()
+    {
+        $this->assertSame(
+            '2020-07-06T13:37:00.001337+01:00',
+            LocalDateTime::normalize(' 2020-  07 - 06 T 13 :37 : 00 . 001337  + 01: 00 ')
+        );
+    }
+    
     public function testParseText()
     {
         $this->assertEquals( 
-            $this->dateTimeMicro->format(self::MICRO_FORMAT),
-            (LocalDateTime::parse(self::DATETIME_MICRO_STR))->format(self::MICRO_FORMAT)
+            $this->dateTime,
+            LocalDateTime::parse(self::DATETIME_STR)
         );
         
-        $dateTime = new \DateTime('@' . self::TIMESTAMP);
-        $localDateTime = LocalDateTime::parse(self::TIMESTAMP);
+        LocalDateTime::setLocalTimeZone($this->tzLocal);
         
-        $this->assertEquals(
-            $dateTime->format(self::MICRO_FORMAT),
-            $localDateTime->format(self::MICRO_FORMAT)
+        $this->assertEquals( 
+            new \DateTime(self::DATETIME_STR),
+            LocalDateTime::parse(self::DATETIME_STR)
         );
         
-        $dateTime2 = new \DateTime(self::DATETIME_NORMALIZED);
-        $localDateTime2 = LocalDateTime::parse(self::DATETIME_TONORMALIZE);
-        
         $this->assertEquals(
-            $dateTime2->format(self::MICRO_FORMAT),
-            $localDateTime2->format(self::MICRO_FORMAT)
+            new \DateTime('@' . self::TIMESTAMP), 
+            LocalDateTime::parse(self::TIMESTAMP)
         );
     }
     
@@ -134,105 +126,19 @@ final class LocalDateTimeTest extends TestCase
     public function testParseFromFormat()
     {
         $localDateTimeFromFormat = LocalDateTime::parse(
-            $this->dateTimeMicro->format(self::MICRO_FORMAT), 
-            self::MICRO_FORMAT
+            $this->dateTime->format('Y-m-d H:i:s.u'), 
+            'Y-m-d H:i:s.u'
         );
         
         $this->assertEquals(
-            $this->dateTimeMicro->format(self::MICRO_FORMAT),
-            $localDateTimeFromFormat->format(self::MICRO_FORMAT)
+            $this->dateTime,
+            $localDateTimeFromFormat
         );
     }
     
     public function testParseFromFormatException()
     {
         $this->expectException(DateTimeParseException::class);
-        LocalDateTime::parse('not a date', self::MICRO_FORMAT);
-    }
-    
-    public function testCompareTo()
-    {
-        $localDateTime = new LocalDateTime(self::DATETIME_MICRO_STR);
-        $this->assertEquals(0, $localDateTime->compareTo($this->dateTimeMicro));
-        
-        $localDateTime2 = new LocalDateTime('2020-01-01 13:37');
-        $dateTime2 = new \DateTime('2020-01-01 13:36');
-        $this->assertEquals(1, $localDateTime2->compareTo($dateTime2));
-        
-        $localDateTime3 = new LocalDateTime('2019-12-31 23:59:59');
-        $dateTime3 = new \DateTime('2020-01-01');
-        $this->assertEquals(-1, $localDateTime3->compareTo($dateTime3));
-    }
-    
-    public function testCompareDateTo()
-    {
-        $localDateTime1 = new LocalDateTime('2020-01-01 13:37');
-        $dateTime1 = new \DateTime('2020-01-01 13:36');
-        $this->assertEquals(0, $localDateTime1->compareDateTo($dateTime1));
-        
-        $localDateTime2 = new LocalDateTime('2020-01-02 13:37');
-        $dateTime2 = new \DateTime('2020-01-01 13:37');
-        $this->assertEquals(1, $localDateTime2->compareDateTo($dateTime2));
-        
-        $localDateTime3 = new LocalDateTime('2019-12-31 13:37');
-        $dateTime3 = new \DateTime('2020-01-01 13:37');
-        $this->assertEquals(-1, $localDateTime3->compareDateTo($dateTime3));
-    }
-    
-    public function testEquals()
-    {
-        $localDateTime = new LocalDateTime(self::DATETIME_MICRO_STR);
-        $this->assertTrue($localDateTime->equals($this->dateTimeMicro));
-        
-        $localDateTime2 = new LocalDateTime(self::DATETIME_MICRO_STR, null, false);
-        $this->assertFalse($localDateTime2->equals($this->dateTimeMicro));
-    }
-    
-    public function testGet()
-    {
-        $localDateTime = new LocalDateTime('2020-07-06 13:37:11.123456');
-        $this->assertSame(2020, $localDateTime->getYear());
-        $this->assertSame(7, $localDateTime->getMonthValue());
-        $this->assertSame(6, $localDateTime->getDayOfMonth());
-        $this->assertSame(13, $localDateTime->getHour());
-        $this->assertSame(37, $localDateTime->getMinute());
-        $this->assertSame(11, $localDateTime->getSecond());
-        $this->assertSame(123456, $localDateTime->getMicro());
-    }
-    
-    public function testWithMicro()
-    {
-        $localDateTime = new LocalDateTime(self::DATETIME_MICRO_STR);
-        $newLocalDateTime = $localDateTime->withMicro(0);
-        
-        $this->assertNotEquals(
-            $localDateTime->format(self::MICRO_FORMAT), 
-            $newLocalDateTime->format(self::MICRO_FORMAT)
-        );
-    }
-    
-    public function testToString()
-    {
-        $localDateTime = new LocalDateTime('2020-07-06 13:37:11.123456');
-        
-        ob_start();
-        echo $localDateTime;
-        $output = ob_get_contents();
-        ob_end_clean();
-        
-        $this->assertEquals(
-            $localDateTime->format('Y-m-d H:i:s.u'), 
-            $output);
-        
-        $localDateTime2 = new LocalDateTime('2020-07-06 13:37:11');
-        
-        ob_start();
-        echo $localDateTime2;
-        $output2 = ob_get_contents();
-        ob_end_clean();
-        
-        $this->assertEquals(
-            $localDateTime2->format('Y-m-d H:i:s'), 
-            $output2);
+        LocalDateTime::parse('not a date', 'Y-m-d H:i:s.u');
     }
 }

@@ -17,7 +17,6 @@ use SemelaPavel\Pagination\Paginator;
  * for advanced pagination.
  * 
  * @author Pavel Semela <semela_pavel@centrum.cz>
- * @version 2020-08-14
  */
 class Pagination extends Paginator
 {

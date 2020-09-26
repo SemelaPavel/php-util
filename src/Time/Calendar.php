@@ -16,7 +16,6 @@ use SemelaPavel\Time\Holidays;
  * Calendar class that helps with some dates calculations.
  * 
  * @author Pavel Semela <semela_pavel@centrum.cz>
- * @version 2020-06-18
  */
 class Calendar
 {

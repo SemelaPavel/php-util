@@ -66,21 +66,28 @@ $lastDayOfMonth = Calendar::lastDayOfMonth($today);
 
 <?php
 $dateTimeStr = ' 2020-  07 - 06 T 13 :37 : 00 . 001337  + 02: 00 ';
-$localDateTime = new LocalDateTime($dateTimeStr);
+$normalizedDateTimeStr = LocalDateTime::normalize($dateTimeStr);
+$localDateTime = LocalDateTime::parse($normalizedDateTimeStr);
+$now = LocalDateTime::now();
+$today = LocalDateTime::today();
 ?>
 
 <h3>LocalDateTime</h3>
     <table>
          <tr>
-            <td>LocalDateTime Now:</td>
-            <td>"<?= new LocalDateTime() ?>"</td>
+            <td>Now:</td>
+            <td><?= $now->format(LocalDateTime::SQL_DATETIME . '.u') ?></td>
         </tr>
         <tr>
-            <td>String to parse:</td>
+            <td>Today:</td>
+            <td><?= $today->format(LocalDateTime::SQL_DATETIME . '.u') ?></td>
+        </tr>
+        <tr>
+            <td>String to normalize:</td>
             <td>"<?= $dateTimeStr ?>"</td>
         </tr>
         <tr>
-            <td>Parsed LocalDateTime:</td>
-            <td><strong><?= $localDateTime ?></strong> (<?= $localDateTime->getTimezone()->getName() ?>)</td>
+            <td>Normalized string:</td>
+            <td><strong>"<?= $normalizedDateTimeStr ?>"</td>
         </tr>
     </table>

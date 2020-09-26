@@ -15,7 +15,6 @@ namespace SemelaPavel\Time;
  * some extra functionality e.g. calculation of some holiday dates as Easter.
  * 
  * @author Pavel Semela <semela_pavel@centrum.cz>
- * @version 2020-06-07
  */
 class Holidays implements \ArrayAccess
 {

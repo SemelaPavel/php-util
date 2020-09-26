@@ -13,7 +13,6 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @author Pavel Semela <semela_pavel@centrum.cz>
- * @version 2020-08-14
  */
 final class PaginationTest extends TestCase
 {

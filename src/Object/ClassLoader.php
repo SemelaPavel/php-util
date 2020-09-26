@@ -14,7 +14,6 @@ namespace SemelaPavel\Object;
  * PSR-4 Autoloader class. Loads files with required classes.
  * 
  * @author Pavel Semela <semela_pavel@centrum.cz>
- * @version 2020-06-07
  */
 class ClassLoader
 {

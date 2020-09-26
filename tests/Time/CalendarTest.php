@@ -14,7 +14,6 @@ use SemelaPavel\Time\Holidays;
 
 /**
  * @author Pavel Semela <semela_pavel@centrum.cz>
- * @version 2020-06-18
  */
 final class CalendarTest extends TestCase
 {

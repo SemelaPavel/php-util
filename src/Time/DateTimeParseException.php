@@ -14,7 +14,6 @@ namespace SemelaPavel\Time;
  * Exception thrown if date time string cannot be parsed as a DateTime object.
  * 
  * @author Pavel Semela <semela_pavel@centrum.cz>
- * @version 2020-06-20
  */
 class DateTimeParseException extends \Exception
 {
