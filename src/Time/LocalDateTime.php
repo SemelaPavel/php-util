@@ -115,12 +115,11 @@ class LocalDateTime
     {
         $patterns = array(
             '/([\-\.\:\/\+])\s+/',
-            '/([0-9\s]+[T])\s+/',
+            '/\s+([TZ])\s+/',
             '/\s+([\-\.\:\/\+])/',
-            '/\s+([T][0-9\s]+)/',
             '/\s{2,}/'
         );
-        $replacements = array('\1', '\1', '\1', '\1', ' ');
+        $replacements = array('\1', '\1', '\1', ' ');
         $dateStr = trim(preg_replace($patterns, $replacements, $text));
         
         return $dateStr;

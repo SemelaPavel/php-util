@@ -95,6 +95,14 @@ final class LocalDateTimeTest extends TestCase
             '2020-07-06T13:37:00.001337+01:00',
             LocalDateTime::normalize(' 2020-  07 - 06 T 13 :37 : 00 . 001337  + 01: 00 ')
         );
+        $this->assertSame(
+            '2020-07-06 13:37:00.001337',
+            LocalDateTime::normalize(' 2020-  07 - 06  13 :37 : 00 . 001337 ')
+        );
+        $this->assertSame(
+            '2020-07-06T13:37:00.001337Z',
+            LocalDateTime::normalize(' 2020-  07 - 06 T 13 :37 : 00  . 001337  Z ')
+        );
     }
     
     public function testParseText()
