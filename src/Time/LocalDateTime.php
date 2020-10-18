@@ -10,7 +10,7 @@
 
 namespace SemelaPavel\Time;
 
-use SemelaPavel\Time\DateTimeParseException;
+use SemelaPavel\Time\Exception\DateTimeParseException;
 
 /**
  * DateTime factory.
@@ -54,6 +54,7 @@ class LocalDateTime
      * 
      * @param string $format The specific date-time format to use or null.
      * @return \DateTime New \DateTime instance.
+     * @throws \InvalidArgumentException If given format is not valid.
      */
     public static function now($format = null)
     {
@@ -80,7 +81,7 @@ class LocalDateTime
      */
     public static function today()
     {
-        return self::now(self::ISO_DATE);
+        return static::now(self::ISO_DATE);
     }
         
     /**
@@ -95,7 +96,7 @@ class LocalDateTime
     public static function ofUnixTimestamp($epochSeconds)
     {
         try {
-            return self::parse(strval($epochSeconds), 'U');
+            return static::parse(strval($epochSeconds), 'U');
             
         } catch (DateTimeParseException $e) {
             throw new \InvalidArgumentException(
@@ -138,12 +139,12 @@ class LocalDateTime
     {
         try {
             if ($format == null) {                
-                $dateTime = self::parseText($text);
+                $dateTime = static::parseText($text);
             } else {
-                $dateTime = self::parseFormat($text, $format);
+                $dateTime = static::parseFormat($text, $format);
             }
             
-            return $dateTime->setTimezone(self::getLocalTimeZone());
+            return $dateTime->setTimezone(static::getLocalTimeZone());
             
         } catch (DateTimeParseException $e) {
             throw $e;
@@ -165,7 +166,7 @@ class LocalDateTime
             
         } catch (\Exception $e) {
             throw new DateTimeParseException(
-                "Given text cannot be parsed as a date."
+                "Given text cannot be parsed as a date-time."
             );
         }
     }
@@ -189,7 +190,7 @@ class LocalDateTime
             
         } else {
             throw new DateTimeParseException(
-                "Given text cannot be parsed to the datetime format."
+                "Given text cannot be parsed to the date-time format."
             );
         }
     }

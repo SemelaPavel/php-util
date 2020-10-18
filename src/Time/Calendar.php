@@ -45,7 +45,7 @@ class Calendar
         $newDate = clone $date;
         do {
            $newDate = $newDate->modify("next weekday"); 
-        } while (self::isDayOff($newDate, $holidays));
+        } while (static::isDayOff($newDate, $holidays));
         
         return $newDate;
     }
@@ -63,7 +63,7 @@ class Calendar
         $newDate = clone $date;
         do {
            $newDate = $newDate->modify("previous weekday"); 
-        } while (self::isDayOff($newDate, $holidays));
+        } while (static::isDayOff($newDate, $holidays));
         
         return $newDate;
     }

@@ -55,7 +55,7 @@ class Holidays implements \ArrayAccess
     {
         try {
             
-            return self::easter($year)->sub(new \DateInterval("P2D"));
+            return static::easter($year)->sub(new \DateInterval("P2D"));
             
         } catch (\InvalidArgumentException $e) {
             throw $e;
@@ -73,7 +73,7 @@ class Holidays implements \ArrayAccess
     {
         try {
             
-            return self::easter($year)->add(new \DateInterval("P1D"));
+            return static::easter($year)->add(new \DateInterval("P1D"));
             
         } catch (\InvalidArgumentException $e) {
             throw $e;

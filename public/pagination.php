@@ -1,4 +1,6 @@
-<h2>Pagination</h2>
+<h3>&lt;namespace&gt; Pagination</h3>
+
+<h3>&lt;class&gt; Pagination</h3>
 
 <?php
 use SemelaPavel\Pagination\Pagination;
@@ -15,51 +17,7 @@ $page = filter_input(INPUT_GET, 'page');
 $pageNumberStr = "?page={$page}&amp;page-number=";
 ?>
 
-
-<ul class="pagination">
-    
-    <?php if ($pagination->getPrevPage()): ?>
-    
-        <li><a href="<?= $pageNumberStr . $pagination->getPrevPage() ?>">&laquo; Previous</a></li>
-        
-    <?php else: ?>
-        
-        <li class="disabled"><span>&laquo; Previous</span></li>
-        
-    <?php endif; ?>
-    
-<?php
-foreach ($pagination->toArray(1, 2) as $page):
-    
-    if ($page['page'] !== null):
-        if ($page['isCurrent']): ?>
-            
-            <li class="active"><a href="<?= $pageNumberStr . $page['page'] ?>"><?= $page['page'] ?></a></li>
-            
-        <?php else: ?>
-            
-            <li><a href="<?= $pageNumberStr . $page['page'] ?>"><?= $page['page'] ?></a></li>
-            
-        <?php endif; else: ?>
-
-        <li class="disabled"><span>...</span></li>
-        
-    <?php endif; 
-endforeach; ?>    
-    
-    <?php if ($pagination->getNextPage()): ?>
-        
-        <li><a href="<?= $pageNumberStr . $pagination->getNextPage() ?>">Next &raquo;</a></li>
-        
-    <?php else: ?>
-        
-        <li class="disabled"><span>Next &raquo;</span></li>
-        
-    <?php endif; ?>
-</ul>
-
-
-<br>
+<strong>Outer range = 2, Inner range = 2:</strong><br>
 <ul class="pagination">
     
     <?php if ($pagination->getPrevPage()): ?>
@@ -102,8 +60,96 @@ endforeach; ?>
     <?php endif; ?>
 </ul>
 
+<br>
+<strong>Outer range = 1, Inner range = 2:</strong><br>
+<ul class="pagination">
+    
+    <?php if ($pagination->getPrevPage()): ?>
+    
+        <li><a href="<?= $pageNumberStr . $pagination->getPrevPage() ?>">&laquo; Previous</a></li>
+        
+    <?php else: ?>
+        
+        <li class="disabled"><span>&laquo; Previous</span></li>
+        
+    <?php endif; ?>
+    
+<?php
+foreach ($pagination->toArray(1, 2) as $page):
+    
+    if ($page['page'] !== null):
+        if ($page['isCurrent']): ?>
+            
+            <li class="active"><a href="<?= $pageNumberStr . $page['page'] ?>"><?= $page['page'] ?></a></li>
+            
+        <?php else: ?>
+            
+            <li><a href="<?= $pageNumberStr . $page['page'] ?>"><?= $page['page'] ?></a></li>
+            
+        <?php endif; else: ?>
+
+        <li class="disabled"><span>...</span></li>
+        
+    <?php endif; 
+endforeach; ?>    
+    
+    <?php if ($pagination->getNextPage()): ?>
+        
+        <li><a href="<?= $pageNumberStr . $pagination->getNextPage() ?>">Next &raquo;</a></li>
+        
+    <?php else: ?>
+        
+        <li class="disabled"><span>Next &raquo;</span></li>
+        
+    <?php endif; ?>
+</ul>
 
 <br>
+<strong>Outer range = 1, Inner range = 1:</strong><br>
+<ul class="pagination">
+    
+    <?php if ($pagination->getPrevPage()): ?>
+    
+        <li><a href="<?= $pageNumberStr . $pagination->getPrevPage() ?>">&laquo; Previous</a></li>
+        
+    <?php else: ?>
+        
+        <li class="disabled"><span>&laquo; Previous</span></li>
+        
+    <?php endif; ?>
+    
+<?php
+foreach ($pagination->toArray(1, 1) as $page):
+    
+    if ($page['page'] !== null):
+        if ($page['isCurrent']): ?>
+            
+            <li class="active"><a href="<?= $pageNumberStr . $page['page'] ?>"><?= $page['page'] ?></a></li>
+            
+        <?php else: ?>
+            
+            <li><a href="<?= $pageNumberStr . $page['page'] ?>"><?= $page['page'] ?></a></li>
+            
+        <?php endif; else: ?>
+
+        <li class="disabled"><span>...</span></li>
+        
+    <?php endif; 
+endforeach; ?>    
+    
+    <?php if ($pagination->getNextPage()): ?>
+        
+        <li><a href="<?= $pageNumberStr . $pagination->getNextPage() ?>">Next &raquo;</a></li>
+        
+    <?php else: ?>
+        
+        <li class="disabled"><span>Next &raquo;</span></li>
+        
+    <?php endif; ?>
+</ul>
+
+<br>
+<strong>Outer range = 0, Inner range = 2:</strong><br>
 <ul class="pagination">
     
     <?php if ($pagination->getPrevPage()): ?>
@@ -146,8 +192,8 @@ endforeach; ?>
     <?php endif; ?>
 </ul>
 
-
 <br>
+<strong>Outer range = 1, Inner range = 0:</strong><br>
 <ul class="pagination">
     
     <?php if ($pagination->getPrevPage()): ?>
@@ -192,6 +238,7 @@ endforeach; ?>
 
 
 <br>
+<strong>Outer range = 0, Inner range = 0:</strong><br>
 <ul class="pagination">
     
     <?php if ($pagination->getPrevPage()): ?>

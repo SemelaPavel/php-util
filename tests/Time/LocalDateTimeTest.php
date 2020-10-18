@@ -9,7 +9,7 @@
  */
 
 use PHPUnit\Framework\TestCase;
-use SemelaPavel\Time\DateTimeParseException;
+use SemelaPavel\Time\Exception\DateTimeParseException;
 use SemelaPavel\Time\LocalDateTime;
 
 /**

@@ -1,4 +1,4 @@
-<h2>Time</h2>
+<h2>&lt;namespace&gt; Time</h2>
 
 <?php
 use SemelaPavel\Time\Holidays;
@@ -23,7 +23,7 @@ $holidays["{$year}-12-25"] = "Christmas Day";
 $holidays["{$year}-12-26"] = "2nd Day of Christmas";
 
 ?>
-<h3>Holidays</h3>
+<h3>&lt;class&gt; Holidays</h3>
 <?php
 
 foreach ($holidays->toArray() as $date => $description) { 
@@ -36,23 +36,19 @@ $nextWorkday = Calendar::nextWorkday($today);
 $lastDayOfPrevMonth = Calendar::lastDayOfPrevMonth($today);
 $lastDayOfMonth = Calendar::lastDayOfMonth($today);
 ?>
-<h3>Calendar</h3>
+<h3>&lt;class&gt; Calendar</h3>
     <table>
         <tr>
             <td>Current year:</td>
             <td><?= $year ?></td>
         </tr>
         <tr>
-            <td>Last day of previous month:</td>
-            <td><?= $lastDayOfPrevMonth->format('D Y-m-d') ?></td>
+            <td>Today:</td>
+            <td><?= $today->format('D Y-m-d') ?></td>
         </tr>
         <tr>
             <td>Previous workday:</td>
             <td><?= $prevWorkday->format('D Y-m-d') ?></td>
-        </tr>
-        <tr>
-            <td>Today:</td>
-            <td><?= $today->format('D Y-m-d') ?></td>
         </tr>
         <tr>
             <td>Next workday:</td>
@@ -61,6 +57,10 @@ $lastDayOfMonth = Calendar::lastDayOfMonth($today);
         <tr>
             <td>Last day of month:</td>
             <td><?= $lastDayOfMonth->format('D Y-m-d') ?></td>
+        </tr>
+        <tr>
+            <td>Last day of previous month:</td>
+            <td><?= $lastDayOfPrevMonth->format('D Y-m-d') ?></td>
         </tr>
     </table>
 
@@ -72,7 +72,7 @@ $now = LocalDateTime::now();
 $today = LocalDateTime::today();
 ?>
 
-<h3>LocalDateTime</h3>
+<h3>&lt;class&gt; LocalDateTime</h3>
     <table>
          <tr>
             <td>Now:</td>

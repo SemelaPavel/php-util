@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace SemelaPavel\Time;
+namespace SemelaPavel\Time\Exception;
 
 /**
  * Exception thrown if date time string cannot be parsed as a DateTime object.
@@ -17,5 +17,5 @@ namespace SemelaPavel\Time;
  */
 class DateTimeParseException extends \Exception
 {
-    
+    protected $message = 'The string cannot be parsed as a date-time.';
 }
