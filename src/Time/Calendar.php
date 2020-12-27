@@ -25,6 +25,7 @@ class Calendar
      * 
      * @param \DateTimeInterface $date Date to be evaluated.
      * @param Holidays $holidays ArrayAccess object that contains holidays.
+     * 
      * @return bool True if the date is a day off or false if it is a workday.
      */
     public static function isDayOff(\DateTimeInterface $date, Holidays $holidays = null)
@@ -38,6 +39,7 @@ class Calendar
      * 
      * @param \DateTimeInterface $date Starting date to search next workday.
      * @param Holidays $holidays ArrayAccess object that contains holidays.
+     * 
      * @return \DateTime|\DateTimeImmutable Next workday.
      */
     public static function nextWorkday(\DateTimeInterface $date, Holidays $holidays = null)
@@ -56,6 +58,7 @@ class Calendar
      * 
      * @param \DateTimeInterface $date Starting date to search next workday.
      * @param Holidays $holidays ArrayAccess object that contains holidays.
+     * 
      * @return \DateTime|\DateTimeImmutable Previous workday.
      */
     public static function prevWorkday(\DateTimeInterface $date, Holidays $holidays = null)
@@ -73,6 +76,7 @@ class Calendar
      * Given date is not modified.
      * 
      * @param \DateTimeInterface $date Starting day to search.
+     * 
      * @return \DateTime|\DateTimeImmutable Last day of the month.
      */
     public static function lastDayOfMonth(\DateTimeInterface $date)
@@ -87,6 +91,7 @@ class Calendar
      * Given date is not modified.
      * 
      * @param \DateTimeInterface $date Starting day to search.
+     * 
      * @return \DateTime|\DateTimeImmutable Last day of previous month.
      */
     public static function lastDayOfPrevMonth(\DateTimeInterface $date)

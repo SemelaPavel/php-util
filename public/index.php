@@ -11,16 +11,17 @@ require dirname(__DIR__) . '/config/bootstrap.php';
     <body>
         <h1>PHP-Util</h1>
         <ul>
-            <li><a href="?page=object">Object</a></li>
-            <li><a href="?page=time">Time</a></li>
             <li><a href="?page=file">File</a></li>
+            <li><a href="?page=http">Http</a></li>
+            <li><a href="?page=object">Object</a></li>
             <li><a href="?page=pagination">Pagination</a></li>
+            <li><a href="?page=time">Time</a></li>
         </ul>
 <?php
-$options = array('options' => array('default'=> 'object')); 
+$options = array('options' => array('default'=> 'file')); 
 $page = filter_input(INPUT_GET, 'page', FILTER_DEFAULT, $options);
 
-include dirname(__DIR__) . "/public/{$page}.php";
+include dirname(__DIR__) . "/public/pages/{$page}.php";
 ?>
 
     </body>

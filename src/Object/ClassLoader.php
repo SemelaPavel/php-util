@@ -24,6 +24,10 @@ class ClassLoader
     protected $baseDir;
 
     /**
+     * Initializes new classloader for the given name space and the given
+     * base directory. Namespace prefix is a part of fully qualified class
+     * name that is not used in directory structure.
+     * 
      * @param string $namespacePrefix Namespace prefix.
      * @param string $baseDir Base directory where autoloader can find classes.
      */
@@ -33,11 +37,9 @@ class ClassLoader
         $this->namespacePrefix = trim($namespacePrefix, '\\') . '\\';
         
         // normalize the base directory with current directory separator 
+        $baseDir = rtrim($baseDir, "\x00..\x1F \x7F\xFF\\/");
         $toSearch = DIRECTORY_SEPARATOR == '/' ? '\\' : '/';
-        $this->baseDir = rtrim(
-            str_replace($toSearch, DIRECTORY_SEPARATOR, $baseDir), 
-            DIRECTORY_SEPARATOR
-        );
+        $this->baseDir = str_replace($toSearch, DIRECTORY_SEPARATOR, $baseDir);     
     }
 
     /**
@@ -61,6 +63,7 @@ class ClassLoader
      * files with required classes.
      * 
      * @param string $class The fully-qualified class name.
+     * 
      * @return bool True on success, False if class file cannot be loaded.
      */
     public function loadClass($class)
@@ -83,6 +86,7 @@ class ClassLoader
      * prefix is not set, returns always true.
      * 
      * @param string $class The fully-qualified class name.
+     * 
      * @return bool True if class matches the namespace prefix.
      */
     protected function checkNamespacePrefix($class)
@@ -102,6 +106,7 @@ class ClassLoader
      * Removes namespace prefix from fully-qualified class name.
      * 
      * @param string $class The fully-qualified class name.
+     * 
      * @return string Relative class name.
      */
     protected function relClassName($class)
@@ -116,6 +121,7 @@ class ClassLoader
      * Returns file path of the class.
      * 
      * @param string $class The fully-qualified or relative class name.
+     * 
      * @return string File path.
      */
     protected function classFile($class)
@@ -129,6 +135,7 @@ class ClassLoader
      * If a file exists, require it from the file system.
      *
      * @param string $file The file to require.
+     * 
      * @return bool True if the file exists, false if not.
      */
     protected function requireFile($file)

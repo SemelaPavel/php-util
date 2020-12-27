@@ -53,7 +53,9 @@ class LocalDateTime
      * is used, then obtained date-time is modified acording to the format.
      * 
      * @param string $format The specific date-time format to use or null.
+     * 
      * @return \DateTime New \DateTime instance.
+     * 
      * @throws \InvalidArgumentException If given format is not valid.
      */
     public static function now($format = null)
@@ -90,7 +92,9 @@ class LocalDateTime
      * The resulting time is adjusted according to the default local time zone. 
      *
      * @param int|string $epochSeconds Seconds from the epoch of 1970-01-01T00:00:00Z.
+     * 
      * @return \DateTime New \DateTime instance.
+     * 
      * @throws \InvalidArgumentException If given number is not a valid timestamp.
      */
     public static function ofUnixTimestamp($epochSeconds)
@@ -110,6 +114,7 @@ class LocalDateTime
      * Removes extra spaces and spaces between month and day separators.
      * 
      * @param string $text Date-time string.
+     * 
      * @return string Normalized date-time string.
      */
     public static function normalize($text)
@@ -132,7 +137,9 @@ class LocalDateTime
      *  
      * @param string $text The text to parse, not null.
      * @param string $format The specific date-time format to use or null.
+     * 
      * @return \DateTime The parsed date-time.
+     * 
      * @throws DateTimeParseException If the text cannot be parsed.
      */
     public static function parse($text, $format = null)
@@ -156,7 +163,9 @@ class LocalDateTime
      * The string must represent a valid date-time.
      * 
      * @param string $text The text to parse, not null.
+     * 
      * @return \DateTime The parsed date-time.
+     * 
      * @throws DateTimeParseException If the text cannot be parsed.
      */
     protected static function parseText($text)
@@ -178,7 +187,9 @@ class LocalDateTime
      * 
      * @param string $text The text to parse, not null.
      * @param string $format The specific date-time format to use.
+     * 
      * @return \DateTime The parsed date-time.
+     * 
      * @throws DateTimeParseException If the text cannot be parsed.
      */
     protected static function parseFormat($text, $format)

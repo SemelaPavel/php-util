@@ -60,6 +60,7 @@ class Pagination extends Paginator
      * @param int $outerRange Number of pages on left and right side of pagination bar.
      * @param int $innerRange Number of pages on left and right side of current page.
      * @param string $gap Non-contiguous pages separator.
+     * 
      * @return array Pages numbers of pagination.
      */
     public function toArray($outerRange = 1, $innerRange = 2, $gap = null)
@@ -99,6 +100,7 @@ class Pagination extends Paginator
      * is also current page, or false if not.
      * 
      * @param int $page Page number.
+     * 
      * @return array Pair of page number and current page boolean identifier.
      */
     protected function getPage($page)
@@ -112,6 +114,7 @@ class Pagination extends Paginator
      * 
      * @param int $innerRange Number of pages on left and right side of current page.
      * @param int $outerLeftEnd Ending page number of left outer pagination side.
+     * 
      * @return int Page number where inner pages part of pagination starts.
      */
     protected function getInnerStartPage($innerRange, $outerLeftEnd)
@@ -135,6 +138,7 @@ class Pagination extends Paginator
      * 
      * @param int $innerRange Number of pages on left and right side of current page.
      * @param int $outerRightStart First page number of right outer pagination side.
+     * 
      * @return int Page number where inner pages part of pagination ends.
      */
     protected function getInnerEndPage($innerRange, $outerRightStart)

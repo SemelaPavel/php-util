@@ -58,7 +58,9 @@ class Byte
      * 
      * @param int|float $value The value to be represented by the Byte.
      * @param string $unit Binary unit in ISO/IEC 80000 or JEDEC standard.
+     * 
      * @return Byte New Byte object.
+     * 
      * @throws ByteParseException If the given binary unit cannot be recognised.
      */
     public static function from($value, $unit)
@@ -85,7 +87,9 @@ class Byte
      * e.g. Byte::parse('1 KB') = Byte(1024)
      * 
      * @param string $byteStr String with numerical value and binary units.
+     * 
      * @return Byte New Byte object.
+     * 
      * @throws ByteParseException If the given string cannot be parsed as a byte.
      */
     public static function parse($byteStr)
@@ -119,6 +123,7 @@ class Byte
      * e.g. Byte::fromPhpIniNotation('1K') = Byte(1024)
      * 
      * @param string $byteStr String with shorthand notation of binary units.
+     * 
      * @return Byte New Byte object.
      */
     public static function fromPhpIniNotation($byteStr)
@@ -148,7 +153,9 @@ class Byte
      * 
      * @param string $unit Binary unit in ISO/IEC 80000 or JEDEC standard.
      * @param int $precision The number of decimals in the result.
+     * 
      * @return float The result of conversion of the bytes to the other binary unit.
+     * 
      * @throws ByteParseException If the given binary unit cannot be recognised.
      */
     public function floatValue($unit, $precision = 2)
@@ -163,6 +170,21 @@ class Byte
         }
     }
 
+    /**
+     * Sets the Byte instance value to the specified value.
+     * Returns the Byte instance for method chaining
+     * 
+     * @param int $value The value to be represented by the Byte.
+     * 
+     * @return Byte This instance.
+     */
+    public function setValue($value)
+    {
+        $this->value = $value;
+        
+        return $this;
+    }
+    
     /**
      * Returns the value of this Byte.
      * 
@@ -188,6 +210,7 @@ class Byte
      * Returns false if the unit cannot be recognised.
      * 
      * @param string $unit Binary unit in ISO/IEC 80000 or JEDEC standard.
+     * 
      * @return boolean|int Number of bytes for the given unit or false.
      */
     protected static function byteValueOfUnit($unit)

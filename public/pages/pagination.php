@@ -1,4 +1,4 @@
-<h3>&lt;namespace&gt; Pagination</h3>
+<h2>&lt;namespace&gt; Pagination</h2>
 
 <h3>&lt;class&gt; Pagination</h3>
 

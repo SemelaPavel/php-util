@@ -27,7 +27,9 @@ class Holidays implements \ArrayAccess
      * Calculates Easter date for given year.
      * 
      * @param string $year Year in YYYY format.
+     * 
      * @return \DateTime New \DateTime object with Easter date.
+     * 
      * @throws \InvalidArgumentException If given year is not in right format.
      */
     public static function easter($year)
@@ -48,7 +50,9 @@ class Holidays implements \ArrayAccess
      * Calculates date of Good Friday day for given year.
      * 
      * @param string $year Year in YYYY format.
+     * 
      * @return \DateTime New \DateTime object with Good Friday date.
+     * 
      * @throws \InvalidArgumentException If given year is not in right format.
      */
     public static function goodFriday($year)
@@ -66,7 +70,9 @@ class Holidays implements \ArrayAccess
      * Calculates date of Easter Monday day for given year.
      * 
      * @param string $year Year in YYYY format.
+     * 
      * @return \DateTime New \DateTime object with Easter Monday date.
+     * 
      * @throws \InvalidArgumentException If given year is not in right format.
      */
     public static function easterMonday($year)
@@ -84,6 +90,7 @@ class Holidays implements \ArrayAccess
      * Checks if the given key already exists in holidays array or not.
      * 
      * @param \DateTimeInterface|string $date DateTime... or string as YYYY-MM-DD.
+     * 
      * @return bool TRUE if the key exists in holidays array or FALSE if not.
      */
     public function offsetExists($date)
@@ -102,7 +109,9 @@ class Holidays implements \ArrayAccess
      * if such a date exists in holidays array.
      * 
      * @param \DateTimeInterface|string $date DateTime... or string as YYYY-MM-DD.
+     * 
      * @return string Holiday name or description for the given date.
+     * 
      * @throws \InvalidArgumentException If given date is not in right format.
      */
     public function offsetGet($date)
@@ -122,6 +131,7 @@ class Holidays implements \ArrayAccess
      * 
      * @param \DateTimeInterface|string $date DateTime... or string as YYYY-MM-DD.
      * @param string $name Holiday name or description fot given date.
+     * 
      * @throws \InvalidArgumentException If given date is not in right format.
      */
     public function offsetSet($date, $name)
@@ -166,7 +176,9 @@ class Holidays implements \ArrayAccess
      * returns this date formated as string in YYYY-MM-DD format.
      * 
      * @param \DateTimeInterface|string $date DateTime... or string as YYYY-MM-DD.
+     * 
      * @return string Formated date string as YYYY-MM-DD.
+     * 
      * @throws \InvalidArgumentException If given date is not in right format.
      */
     protected function parseOffset($date)

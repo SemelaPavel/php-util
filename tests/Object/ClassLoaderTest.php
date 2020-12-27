@@ -54,12 +54,12 @@ final class ClassLoaderTest extends TestCase
         
         $this->addClassLoader(
             'Acme\Log\Writer', 
-            './acme-log-writer/lib/', 
+            "./acme-log-writer/lib/ \x7F", 
             [".{$ds}acme-log-writer{$ds}lib{$ds}File_Writer.php"]
         );
         $this->addClassLoader(
             'Aura\Web', 
-            '\path\to\aura-web\src', 
+            '\path\to\aura-web\src \\ ', 
             ["{$ds}path{$ds}to{$ds}aura-web{$ds}src{$ds}Response{$ds}Status.php"]
         );
         $this->addClassLoader(
@@ -69,7 +69,7 @@ final class ClassLoaderTest extends TestCase
         );
         $this->addClassLoader(
             'Zend', 
-            '/usr/includes/Zend/', 
+            "/usr/includes/Zend/ \xFF \\", 
             ["{$ds}usr{$ds}includes{$ds}Zend{$ds}Acl.php"]
         );
     }

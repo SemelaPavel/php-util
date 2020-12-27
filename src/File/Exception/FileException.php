@@ -8,14 +8,13 @@
  * file that was distributed with this source code.
  */
 
-namespace SemelaPavel\Object\Exception;
+namespace SemelaPavel\File\Exception;
 
 /**
- * Exception thrown if the number or string cannot be parsed as a binary byte.
+ * Exception thrown when error occurs while working with the file system.
  * 
  * @author Pavel Semela <semela_pavel@centrum.cz>
  */
-class ByteParseException extends \Exception
+class FileException extends \RuntimeException
 {
-    protected $message = 'The given string or number cannot be parsed as a byte.';
 }

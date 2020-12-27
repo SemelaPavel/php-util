@@ -91,6 +91,12 @@ final class ByteTest extends TestCase
         $byte->floatValue('km');
     }
     
+    public function testSet()
+    {
+        $byte = new Byte(1024);
+        $this->assertSame(2048, $byte->setValue(2048)->getValue());
+    }
+    
     public function testToString()
     {
         $byte = new Byte(524281337);
