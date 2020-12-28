@@ -71,50 +71,17 @@ class ClassLoader
         // normalize class name
         $class = ltrim($class, '\\');
         
-        if ($this->checkNamespacePrefix($class)) {
-            $classFile = $this->classFile($this->relClassName($class));
+        if (strpos($class, $this->namespacePrefix) === 0) {
+            
+            $classFile = $this->classFile(
+                substr($class, strlen($this->namespacePrefix))
+            );
         
             return $this->requireFile($classFile);
         } else {
             
             return false;
         }
-    }
-
-    /**
-     * Checks if class has the namespace prefix. If the namespace
-     * prefix is not set, returns always true.
-     * 
-     * @param string $class The fully-qualified class name.
-     * 
-     * @return bool True if class matches the namespace prefix.
-     */
-    protected function checkNamespacePrefix($class)
-    {
-        if ($this->namespacePrefix != null) {
-            $prefix = substr($class, 0, strlen($this->namespacePrefix));
-            
-            return  $prefix == $this->namespacePrefix;
-        } else {
-            
-            return true;
-        }
-        
-    }
-
-    /**
-     * Removes namespace prefix from fully-qualified class name.
-     * 
-     * @param string $class The fully-qualified class name.
-     * 
-     * @return string Relative class name.
-     */
-    protected function relClassName($class)
-    {
-        $prefix = preg_quote($this->namespacePrefix);
-        $relClassName = preg_replace("/^$prefix/", '', $class);
-        
-        return $relClassName;
     }
 
     /**
