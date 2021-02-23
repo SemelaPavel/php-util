@@ -5,7 +5,8 @@
         "class loader",
         "pagination",
         "date time",
-        "file upload"
+        "file upload",
+        "regex"
     ],
     "homepage": "https://github.com/SemelaPavel/php-util",
     "type": "library",
