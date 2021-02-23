@@ -42,76 +42,49 @@ final class MockClassLoader extends ClassLoader
 
 /**
  * @author Pavel Semela <semela_pavel@centrum.cz>
- * @version 2020-06-07
  */
 final class ClassLoaderTest extends TestCase
 {
-    protected $classLoaders = [];
+    protected $classLoader;
     
     protected function setUp(): void
     {
-        $ds = DIRECTORY_SEPARATOR;
-        
-        $this->addClassLoader(
-            'Acme\Log\Writer', 
-            "./acme-log-writer/lib/ \x7F", 
-            [".{$ds}acme-log-writer{$ds}lib{$ds}File_Writer.php"]
-        );
-        $this->addClassLoader(
-            'Aura\Web', 
-            '\path\to\aura-web\src \\ ', 
-            ["{$ds}path{$ds}to{$ds}aura-web{$ds}src{$ds}Response{$ds}Status.php"]
-        );
-        $this->addClassLoader(
-            'Symfony\Core', 
-            './vendor\Symfony\Core/', 
-            [".{$ds}vendor{$ds}Symfony{$ds}Core{$ds}Request.php"]
-        );
-        $this->addClassLoader(
-            'Zend', 
-            "/usr/includes/Zend/ \xFF \\", 
-            ["{$ds}usr{$ds}includes{$ds}Zend{$ds}Acl.php"]
-        );
-    }
-    
-    /**
-     * @param string $namespacePrefix Namespace prefix.
-     * @param string $baseDir Base directory where autoloader can find classes.
-     * @param array $files Array with class files, that loader should return.
-     */
-    protected function addClassLoader($namespacePrefix, $baseDir, array $files)
-    {
-        $classLoader = new MockClassLoader($namespacePrefix, $baseDir);
-        $classLoader->setFiles($files);
-        $this->classLoaders[] = $classLoader;
-    }
-    
-    /**
-     * Finds ClassLoader that match with input class. 
-     * 
-     * @param string $class The fully-qualified class name.
-     * @return bool True on success, False if class cannot be loaded.
-     */
-    protected function classLoaderMatch($class): bool
-    {
-        foreach ($this->classLoaders as $classLoader) {
-            if ($classLoader->loadClass($class)) {
+        $files = [
+            './acme-log-writer/lib/File_Writer.php',
+            './acme-log-writer/lib2/File_Writer2.php',
+            '/path/to/aura-web/src/Response/Status.php',
+            './vendor/Symfony/Core/Request.php',
+            '/usr/includes/Zend/Acl.php',
+            '/src/other/Status.php',
+            '/src/other/packages/Vendor/Symfony/Core/Request.php'
+        ];
                 
-                return true;
-            }
-        }
+        $this->classLoader = new MockClassLoader();
+        $this->classLoader->addNamespace('Acme\Log\Writer', './acme-log-writer/lib/');
+        $this->classLoader->addNamespace('Acme\Log\Writer', './acme-log-writer/lib2/');
+        $this->classLoader->addNamespace('Aura\Web', '\path\to\aura-web\src');
+        $this->classLoader->addNamespace('Symfony\Core', './vendor\Symfony\Core/');
+        $this->classLoader->addNamespace('Zend', '/usr/includes/Zend/');
+        $this->classLoader->addDirectory('\src\other\\');
+        $this->classLoader->addDirectory('\src\other\packages\\');
         
-        return false;
+        $this->classLoader->setFiles($files);
     }
-    
+
     public function testLoadClass()
     {
-        $this->assertTrue($this->classLoaderMatch('\Acme\Log\Writer\File_Writer'));
-        $this->assertTrue($this->classLoaderMatch('\Aura\Web\Response\Status'));
-        $this->assertTrue($this->classLoaderMatch('\Symfony\Core\Request'));
-        $this->assertTrue($this->classLoaderMatch('\Zend\Acl'));
-        $this->assertFalse($this->classLoaderMatch('\Zend/Acl'));
-        $this->assertFalse($this->classLoaderMatch('\Zend\Acl\\'));
-        $this->assertFalse($this->classLoaderMatch('\Core\Request'));
+        $this->assertTrue($this->classLoader->loadClass('\Acme\Log\Writer\File_Writer'));
+        $this->assertTrue($this->classLoader->loadClass('\Acme\Log\Writer\File_Writer2'));
+        $this->assertTrue($this->classLoader->loadClass('Aura\Web\Response\Status'));
+        $this->assertTrue($this->classLoader->loadClass('\Symfony\Core\Request'));
+        $this->assertTrue($this->classLoader->loadClass('Zend\Acl'));
+        $this->assertTrue($this->classLoader->loadClass('Status'));
+        $this->assertTrue($this->classLoader->loadClass('\Vendor\Symfony\Core\Request'));
+        
+        $this->assertFalse($this->classLoader->loadClass('Log\Writer\File_Writer'));
+        $this->assertFalse($this->classLoader->loadClass('Response\Status'));
+        $this->assertFalse($this->classLoader->loadClass('Symfony'));
+        $this->assertFalse($this->classLoader->loadClass('Acl'));
+        $this->assertFalse($this->classLoader->loadClass('\Response\Status'));
     }
 }

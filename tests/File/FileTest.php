@@ -41,7 +41,8 @@ final class FileTest extends TestCase
     public function testGetContentsFileException()
     {
         $this->expectException(SemelaPavel\File\Exception\FileException::class);
-        $this->expectExceptionMessageMatches('/contents of the file(.*)cannot be read/i');
+        $pattern = '/contents of the file(.*)cannot be read(.*)failed to open stream(.*)/i';
+        $this->expectExceptionMessageMatches($pattern);
         
         @chmod($this->file->getPathname(), 0000);
         $this->file->getContents();
@@ -100,7 +101,7 @@ final class FileTest extends TestCase
     {
         //File name length test
         $longFileName = str_repeat('a', File::MAX_FILENAME_LENGTH) . 'a';
-        $maxLengthFileName = substr(str_repeat('abcde', 51), 0, File::MAX_FILENAME_LENGTH);
+        $maxLengthFileName = substr(str_repeat('žščťď', 51), 0, File::MAX_FILENAME_LENGTH);
         
         $this->assertFalse(File::isValidFileName($longFileName));
         $this->assertTrue(File::isValidFileName($maxLengthFileName));

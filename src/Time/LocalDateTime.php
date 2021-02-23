@@ -120,10 +120,10 @@ class LocalDateTime
     public static function normalize($text)
     {
         $patterns = array(
-            '/([\-\.\:\/\+])\s+/',
-            '/\s+([TZ])\s+/',
-            '/\s+([\-\.\:\/\+])/',
-            '/\s{2,}/'
+            '#([\-\.\:/\+])\s+#',
+            '#\s+([TZ])\s+#',
+            '#\s+([\-\.\:/\+])#',
+            '#\s{2,}#'
         );
         $replacements = array('\1', '\1', '\1', ' ');
         $dateStr = trim(preg_replace($patterns, $replacements, $text));

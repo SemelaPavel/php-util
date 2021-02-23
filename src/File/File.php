@@ -21,9 +21,8 @@ use SemelaPavel\File\Exception\FileException;
 class File extends \SplFileInfo
 {
     /**
-     * This should be a safe limit on the length of the file name without
-     * the use of accents. Keep in mind that using an accented character
-     * can be counted as two characters.
+     * This should be a safe limit on the length of the file name using
+     * UCS-2 characters and the mb_strlen function to check out the length.
      */
     const MAX_FILENAME_LENGTH = 254;
     
@@ -39,6 +38,10 @@ class File extends \SplFileInfo
         'LPT1','LPT2','LPT3','LPT4','LPT5','LPT6','LPT7','LPT8','LPT9'
     ];
     
+    /**  @var string Prepared string from reserved filenames for use in the pattern. */
+    protected static $reservedFileNames = 
+        'CON|PRN|AUX|NUL|COM1|COM2|COM3|COM4|COM5|COM6|COM7|COM8|COM9|LPT1|LPT2|LPT3|LPT4|LPT5|LPT6|LPT7|LPT8|LPT9';
+    
     /**
      * List of printable characters reserved by the operating systems,
      * by the URL (RFC 1738) or by the URI (RFC 3986). The list contains
@@ -50,6 +53,9 @@ class File extends \SplFileInfo
         '!', '@', '#', '$', '%', '&', '=', ':',
         '~', '`', '^', ',', ';', '"', "'"
     ];
+    
+    /** @var string Prepared string from reserved characters for use in the pattern. */
+    protected static $reservedChars = '\/|?*+(){}[]<>!@#$%&=:~`^,;"\'';
     
     /**
      * Creates a new file object from the given file name or full path. 
@@ -78,7 +84,7 @@ class File extends \SplFileInfo
         $warning = 'no error details are available';
         
         set_error_handler(function ($errno, $errstr) use (&$warning) { $warning = $errstr; });
-        $content = @\file_get_contents($this->getPathname());
+        $content = \file_get_contents($this->getPathname());
         restore_error_handler();
         
         if ($content === false) {
@@ -121,7 +127,7 @@ class File extends \SplFileInfo
     
     /**
      * Returns the file name with the ASCII control characters (0-31, 127, 255),
-     * whitespaces, slashes, dots and directory separators stripped from the end of string.
+     * whitespaces, slashes, dots and backslashes stripped from the end of string.
      * 
      * @param string $fileName The file name to be modified.
      * 
@@ -129,9 +135,9 @@ class File extends \SplFileInfo
      */
     public static function rtrimFileName($fileName)
     {
-        return rtrim($fileName, "\x00..\x1F \x7F\xFF\\/." . DIRECTORY_SEPARATOR);
+        return rtrim($fileName, "\x00..\x1F \x7F\xFF\\/.");
     }
-    
+        
     /**
      * Checks if the file name is safe and valid.
      * See the rules for a valid file name below:
@@ -150,17 +156,17 @@ class File extends \SplFileInfo
      */
     public static function isValidFileName($fileName)
     {
-        if (strlen($fileName) > self::MAX_FILENAME_LENGTH) {
+        if (mb_strlen($fileName) > self::MAX_FILENAME_LENGTH) {
             return false;
         }
         
-        $pattern1 = sprintf('^(%s)\s*(?(?=\.).*)$', implode('|', self::RESERVED_FILENAMES));
-        $pattern2 = '[\x00-\x1F\x7F\xFF]';
-        $pattern3 = '^[\.\s]*$|^\-.*';
-        $pattern4 = sprintf('[%s]', preg_quote(implode('', self::RESERVED_CHARS), "/"));
+        $pattern1 = '[' . preg_quote(self::$reservedChars, "/") . ']';
+        $pattern2 = '^[\.\s]*$|^\-.*';
+        $pattern3 = '[\x00-\x1F\x7F\xFF]';
+        $pattern4 = '^(' . self::$reservedFileNames . ')\s*(?(?=\.).*)$';
  
         $pattern = "/{$pattern1}|{$pattern2}|{$pattern3}|{$pattern4}/";
-        
+
         return !((bool) preg_match($pattern, $fileName));
     }
 }

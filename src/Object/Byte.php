@@ -99,7 +99,7 @@ class Byte
         $kmgt = '^((?:0|[1-9][0-9]*)(?:[\.\,][0-9]+)?)\s*([KMGT][i]?B)$';
         $matches = [];
         
-        preg_match("/(?|{$int}|{$b}|{$kmgt})/", trim($byteStr), $matches);
+        preg_match("/(?|{$kmgt}|{$b}|{$int})/", trim($byteStr), $matches);
         
         if (count($matches) == 3) {
             return static::from((float) str_replace(',', '.', $matches[1]), $matches[2]);
@@ -132,15 +132,15 @@ class Byte
         
         switch (substr($byteStr, -1)) {
             case 'K': 
-            case 'k': $bytes = (int) $byteStr * self::KB;
+            case 'k': $bytes *= self::KB;
             break;
         
             case 'M': 
-            case 'm': $bytes = (int) $byteStr * self::MB;
+            case 'm': $bytes *= self::MB;
             break;
 
             case 'G': 
-            case 'g': $bytes = (int) $byteStr * self::GB;
+            case 'g': $bytes *= self::GB;
             break;
         }
         

@@ -57,13 +57,7 @@ class Holidays implements \ArrayAccess
      */
     public static function goodFriday($year)
     {
-        try {
-            
-            return static::easter($year)->sub(new \DateInterval("P2D"));
-            
-        } catch (\InvalidArgumentException $e) {
-            throw $e;
-        }
+        return static::easter($year)->sub(new \DateInterval("P2D"));
     }
 
     /**
@@ -77,13 +71,7 @@ class Holidays implements \ArrayAccess
      */
     public static function easterMonday($year)
     {
-        try {
-            
-            return static::easter($year)->add(new \DateInterval("P1D"));
-            
-        } catch (\InvalidArgumentException $e) {
-            throw $e;
-        }
+        return static::easter($year)->add(new \DateInterval("P1D"));
     }
 
     /**
@@ -116,13 +104,7 @@ class Holidays implements \ArrayAccess
      */
     public function offsetGet($date)
     {
-        try {
-            
-            return $this->holidays[$this->parseOffset($date)];
-            
-        } catch (\InvalidArgumentException $e) {
-            throw $e;
-        }
+        return $this->holidays[$this->parseOffset($date)];
     }
 
     /**
@@ -136,13 +118,7 @@ class Holidays implements \ArrayAccess
      */
     public function offsetSet($date, $name)
     {
-        try {
-            
-            $this->holidays[$this->parseOffset($date)] = $name;
-            
-        } catch (\InvalidArgumentException $e) {
-            throw $e;
-        }
+        $this->holidays[$this->parseOffset($date)] = $name;
     }
 
     /**

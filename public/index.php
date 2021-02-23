@@ -4,6 +4,8 @@ require dirname(__DIR__) . '/config/bootstrap.php';
 
 <html>
     <head>
+        <meta charset="UTF-8">
+        <title>PHP-Util</title>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source Code Pro">
         <link rel="stylesheet" href="/styles/main.css">
         <link rel="stylesheet" href="/styles/pagination.css">
@@ -15,6 +17,7 @@ require dirname(__DIR__) . '/config/bootstrap.php';
             <li><a href="?page=http">Http</a></li>
             <li><a href="?page=object">Object</a></li>
             <li><a href="?page=pagination">Pagination</a></li>
+            <li><a href="?page=string">String</a></li>
             <li><a href="?page=time">Time</a></li>
         </ul>
 <?php
