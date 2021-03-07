@@ -32,14 +32,7 @@ class File extends \SplFileInfo
      * NUL.txt is not recommended. Using these names can lead to problems for
      * Windows users or for a server running PHP on Windows operating system.
      */
-    const RESERVED_FILENAMES = [
-        'CON','PRN','AUX','NUL',
-        'COM1','COM2','COM3','COM4','COM5','COM6','COM7','COM8','COM9',
-        'LPT1','LPT2','LPT3','LPT4','LPT5','LPT6','LPT7','LPT8','LPT9'
-    ];
-    
-    /**  @var string Prepared string from reserved filenames for use in the pattern. */
-    protected static $reservedFileNames = 
+    const RESERVED_FILENAMES =
         'CON|PRN|AUX|NUL|COM1|COM2|COM3|COM4|COM5|COM6|COM7|COM8|COM9|LPT1|LPT2|LPT3|LPT4|LPT5|LPT6|LPT7|LPT8|LPT9';
     
     /**
@@ -47,15 +40,7 @@ class File extends \SplFileInfo
      * by the URL (RFC 1738) or by the URI (RFC 3986). The list contains
      * also URL unsafe characters (RFC 1738).
      */
-    const RESERVED_CHARS = [
-        '\\', '/', '|', '?', '*', '+',
-        '(', ')', '{', '}', '[', ']', '<', '>',
-        '!', '@', '#', '$', '%', '&', '=', ':',
-        '~', '`', '^', ',', ';', '"', "'"
-    ];
-    
-    /** @var string Prepared string from reserved characters for use in the pattern. */
-    protected static $reservedChars = '\/|?*+(){}[]<>!@#$%&=:~`^,;"\'';
+    const RESERVED_CHARS = '\/|?*+(){}[]<>!@#$%&=:~`^,;"\'';
     
     /**
      * Creates a new file object from the given file name or full path. 
@@ -160,10 +145,10 @@ class File extends \SplFileInfo
             return false;
         }
         
-        $pattern1 = '[' . preg_quote(self::$reservedChars, "/") . ']';
+        $pattern1 = '[' . preg_quote(self::RESERVED_CHARS, "/") . ']';
         $pattern2 = '^[\.\s]*$|^\-.*';
         $pattern3 = '[\x00-\x1F\x7F\xFF]';
-        $pattern4 = '^(' . self::$reservedFileNames . ')\s*(?(?=\.).*)$';
+        $pattern4 = '^(' . self::RESERVED_FILENAMES . ')\s*(?(?=\.).*)$';
  
         $pattern = "/{$pattern1}|{$pattern2}|{$pattern3}|{$pattern4}/";
 

@@ -17,6 +17,19 @@ use SemelaPavel\File\File;
  */
 final class FileTest extends TestCase
 {
+    const RESERVED_FILENAMES = [
+        'CON','PRN','AUX','NUL',
+        'COM1','COM2','COM3','COM4','COM5','COM6','COM7','COM8','COM9',
+        'LPT1','LPT2','LPT3','LPT4','LPT5','LPT6','LPT7','LPT8','LPT9'
+    ];
+    
+    const RESERVED_CHARS = [
+        '\\', '/', '|', '?', '*', '+',
+        '(', ')', '{', '}', '[', ']', '<', '>',
+        '!', '@', '#', '$', '%', '&', '=', ':',
+        '~', '`', '^', ',', ';', '"', "'"
+    ];
+    
     const FILE_CONTENT = 'Some random content of the virtual file.';
     protected $file;
     
@@ -107,7 +120,7 @@ final class FileTest extends TestCase
         $this->assertTrue(File::isValidFileName($maxLengthFileName));
         
         // Reserved file names test
-        foreach (File::RESERVED_FILENAMES as $fileName) {
+        foreach (self::RESERVED_FILENAMES as $fileName) {
             $this->assertFalse(File::isValidFileName($fileName));
             $this->assertFalse(File::isValidFileName($fileName . ' '));
             $this->assertFalse(File::isValidFileName($fileName . '.txt'));
@@ -120,7 +133,7 @@ final class FileTest extends TestCase
         }
         
         // Reserved characters test
-        foreach (File::RESERVED_CHARS as $char) {
+        foreach (self::RESERVED_CHARS as $char) {
             $this->assertFalse(File::isValidFileName('file' . $char . '.txt'));
             $this->assertFalse(File::isValidFileName('file.txt' . $char));
             $this->assertFalse(File::isValidFileName($char . 'file.txt'));
