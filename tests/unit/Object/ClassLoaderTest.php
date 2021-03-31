@@ -1,4 +1,4 @@
-<?php
+<?php declare (strict_types = 1);
 /*
  * This file is part of the php-util package.
  *
@@ -42,6 +42,8 @@ final class MockClassLoader extends ClassLoader
 
 /**
  * @author Pavel Semela <semela_pavel@centrum.cz>
+ * 
+ * @covers \SemelaPavel\Object\ClassLoader
  */
 final class ClassLoaderTest extends TestCase
 {
@@ -61,9 +63,9 @@ final class ClassLoaderTest extends TestCase
                 
         $this->classLoader = new MockClassLoader();
         $this->classLoader->addNamespace('Acme\Log\Writer', './acme-log-writer/lib/');
-        $this->classLoader->addNamespace('Acme\Log\Writer', './acme-log-writer/lib2/');
-        $this->classLoader->addNamespace('Aura\Web', '\path\to\aura-web\src');
-        $this->classLoader->addNamespace('Symfony\Core', './vendor\Symfony\Core/');
+        $this->classLoader->addNamespace('Acme\Log\Writer', './acme-log-writer/lib2\\');
+        $this->classLoader->addNamespace('Aura\Web\\', '\path\to\aura-web\src');
+        $this->classLoader->addNamespace('\Symfony\Core', './vendor\Symfony\Core/');
         $this->classLoader->addNamespace('Zend', '/usr/includes/Zend/');
         $this->classLoader->addDirectory('\src\other\\');
         $this->classLoader->addDirectory('\src\other\packages\\');
@@ -71,20 +73,29 @@ final class ClassLoaderTest extends TestCase
         $this->classLoader->setFiles($files);
     }
 
-    public function testLoadClass()
+    public function classesProvider()
     {
-        $this->assertTrue($this->classLoader->loadClass('\Acme\Log\Writer\File_Writer'));
-        $this->assertTrue($this->classLoader->loadClass('\Acme\Log\Writer\File_Writer2'));
-        $this->assertTrue($this->classLoader->loadClass('Aura\Web\Response\Status'));
-        $this->assertTrue($this->classLoader->loadClass('\Symfony\Core\Request'));
-        $this->assertTrue($this->classLoader->loadClass('Zend\Acl'));
-        $this->assertTrue($this->classLoader->loadClass('Status'));
-        $this->assertTrue($this->classLoader->loadClass('\Vendor\Symfony\Core\Request'));
-        
-        $this->assertFalse($this->classLoader->loadClass('Log\Writer\File_Writer'));
-        $this->assertFalse($this->classLoader->loadClass('Response\Status'));
-        $this->assertFalse($this->classLoader->loadClass('Symfony'));
-        $this->assertFalse($this->classLoader->loadClass('Acl'));
-        $this->assertFalse($this->classLoader->loadClass('\Response\Status'));
+        return [
+            ['\Acme\Log\Writer\File_Writer', true],
+            ['\Acme\Log\Writer\File_Writer2', true],
+            ['Aura\Web\Response\Status', true],
+            ['\Symfony\Core\Request', true],
+            ['Zend\Acl', true],
+            ['Status', true],
+            ['\Vendor\Symfony\Core\Request', true],
+            ['Log\Writer\File_Writer', false],
+            ['Response\Status', false],
+            ['Symfony', false],
+            ['Acl', false],
+            ['\Response\Status', false],
+        ];
+    }
+    
+    /**
+     * @dataProvider classesProvider
+     */
+    public function testLoadClass($class, $result)
+    {
+        $this->assertSame($result, $this->classLoader->loadClass($class));
     }
 }

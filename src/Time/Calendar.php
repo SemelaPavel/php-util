@@ -1,4 +1,4 @@
-<?php
+<?php declare (strict_types = 1);
 /*
  * This file is part of the php-util package.
  *
@@ -28,7 +28,7 @@ class Calendar
      * 
      * @return bool True if the date is a day off or false if it is a workday.
      */
-    public static function isDayOff(\DateTimeInterface $date, Holidays $holidays = null)
+    public static function isDayOff(\DateTimeInterface $date, Holidays $holidays = null): bool
     {
         return isset($holidays[$date]) || $date->format('N') > 5;
     }
@@ -40,9 +40,9 @@ class Calendar
      * @param \DateTimeInterface $date Starting date to search next workday.
      * @param Holidays $holidays ArrayAccess object that contains holidays.
      * 
-     * @return \DateTime|\DateTimeImmutable Next workday.
+     * @return \DateTimeInterface Next workday.
      */
-    public static function nextWorkday(\DateTimeInterface $date, Holidays $holidays = null)
+    public static function nextWorkday(\DateTimeInterface $date, Holidays $holidays = null): \DateTimeInterface
     {
         $newDate = clone $date;
         do {
@@ -59,9 +59,9 @@ class Calendar
      * @param \DateTimeInterface $date Starting date to search next workday.
      * @param Holidays $holidays ArrayAccess object that contains holidays.
      * 
-     * @return \DateTime|\DateTimeImmutable Previous workday.
+     * @return \DateTimeInterfacee Previous workday.
      */
-    public static function prevWorkday(\DateTimeInterface $date, Holidays $holidays = null)
+    public static function prevWorkday(\DateTimeInterface $date, Holidays $holidays = null): \DateTimeInterface
     {
         $newDate = clone $date;
         do {
@@ -77,9 +77,9 @@ class Calendar
      * 
      * @param \DateTimeInterface $date Starting day to search.
      * 
-     * @return \DateTime|\DateTimeImmutable Last day of the month.
+     * @return \DateTimeInterface Last day of the month.
      */
-    public static function lastDayOfMonth(\DateTimeInterface $date)
+    public static function lastDayOfMonth(\DateTimeInterface $date): \DateTimeInterface
     {
         $newDate = clone $date;
         
@@ -92,9 +92,9 @@ class Calendar
      * 
      * @param \DateTimeInterface $date Starting day to search.
      * 
-     * @return \DateTime|\DateTimeImmutable Last day of previous month.
+     * @return \DateTimeInterface Last day of previous month.
      */
-    public static function lastDayOfPrevMonth(\DateTimeInterface $date)
+    public static function lastDayOfPrevMonth(\DateTimeInterface $date): \DateTimeInterface
     {
         $newDate = clone $date;
         
@@ -106,7 +106,7 @@ class Calendar
      * 
      * @return string String representation of current year in YYYY format.
      */
-    public static function currentYear()
+    public static function currentYear(): string
     {
         return (new \DateTime())->format('Y');
     }

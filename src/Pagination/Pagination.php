@@ -1,4 +1,4 @@
-<?php
+<?php declare (strict_types = 1);
 /*
  * This file is part of the php-util package.
  *
@@ -25,15 +25,15 @@ class Pagination extends Paginator
      * current page 5 and outer range set to 1 and inner range set to 2, you
      * will get this array:
      *  [
-     *      ['page' => 1, 'isCurrent => false],
-     *      ['page' => null, 'isCurrent => false],
-     *      ['page' => 3, 'isCurrent => false],
-     *      ['page' => 4, 'isCurrent => false],
-     *      ['page' => 5, 'isCurrent => true],
-     *      ['page' => 6, 'isCurrent => false],
-     *      ['page' => 7, 'isCurrent => false],
-     *      ['page' => null, 'isCurrent => false],
-     *      ['page' => 20, 'isCurrent => false]
+     *      ['page' => 1, 'isCurrent' => false],
+     *      ['page' => null, 'isCurrent' => false],
+     *      ['page' => 3, 'isCurrent' => false],
+     *      ['page' => 4, 'isCurrent' => false],
+     *      ['page' => 5, 'isCurrent' => true],
+     *      ['page' => 6, 'isCurrent' => false],
+     *      ['page' => 7, 'isCurrent' => false],
+     *      ['page' => null, 'isCurrent' => false],
+     *      ['page' => 20, 'isCurrent' => false]
      *  ]      
      * 
      * Outer range means how much pages makes pagination borders. If it is set
@@ -63,7 +63,7 @@ class Pagination extends Paginator
      * 
      * @return array Pages numbers of pagination.
      */
-    public function toArray($outerRange = 1, $innerRange = 2, $gap = null)
+    public function toArray(int $outerRange = 1, int $innerRange = 2, ?string $gap = null): array
     {
         $pages = [];
         
@@ -103,7 +103,7 @@ class Pagination extends Paginator
      * 
      * @return array Pair of page number and current page boolean identifier.
      */
-    protected function getPage($page)
+    protected function getPage(?int $page): array
     {
         return ['page' => $page, 'isCurrent' => ($page === $this->currentPage)];
     }       
@@ -117,7 +117,7 @@ class Pagination extends Paginator
      * 
      * @return int Page number where inner pages part of pagination starts.
      */
-    protected function getInnerStartPage($innerRange, $outerLeftEnd)
+    protected function getInnerStartPage(int $innerRange, int $outerLeftEnd): int
     {
         if (($this->currentPage - $innerRange) <= $outerLeftEnd) {
             $innerStart = $outerLeftEnd + 1;
@@ -141,7 +141,7 @@ class Pagination extends Paginator
      * 
      * @return int Page number where inner pages part of pagination ends.
      */
-    protected function getInnerEndPage($innerRange, $outerRightStart)
+    protected function getInnerEndPage(int $innerRange, int $outerRightStart): int
     {
         if (($this->currentPage + $innerRange) >= $outerRightStart) {
             $innerEnd = $outerRightStart - 1;

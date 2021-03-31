@@ -1,4 +1,4 @@
-<?php
+<?php declare (strict_types = 1);
 /*
  * This file is part of the php-util package.
  *
@@ -24,21 +24,21 @@ class Paginator
     const ITEMS_PER_PAGE_MIN = 1;
     const NUM_OF_PAGES_MIN = 1;
     
-    protected $numOfItems;
-    protected $itemsPerPage;
-    protected $currentPage;
-    protected $numOfPages = self::NUM_OF_PAGES_MIN;
+    protected int $numOfItems;
+    protected int $itemsPerPage;
+    protected int $currentPage;
+    protected int $numOfPages = self::NUM_OF_PAGES_MIN;
     
     /**
      * Returns new paginator object with specific number of items,
      * the maximum number of items per page and the current page.
      * The total number of pages is updated during initialization too.
      * 
-     * @param int $numOfItems Total number of items to paginate.
+     * @param int|null $numOfItems Total number of items to paginate.
      * @param int $itemsPerPage Maximum number of items to show per one page.
      * @param int $currentPage The number of the current page.
      */
-    public function __construct($numOfItems, $itemsPerPage, $currentPage)
+    public function __construct(?int $numOfItems, int $itemsPerPage, int $currentPage)
     {
         $this->setNumOfItems($numOfItems);
         $this->setItemsPerPage($itemsPerPage);
@@ -48,7 +48,7 @@ class Paginator
     /**
      * @return int Total number of items to paginate.
      */
-    public function getNumOfItems()
+    public function getNumOfItems(): int
     {
         return $this->numOfItems;
     }
@@ -58,7 +58,7 @@ class Paginator
      * 
      * @return int Number of items per one page.
      */
-    public function getItemsPerPage()
+    public function getItemsPerPage(): int
     {
         return $this->itemsPerPage;
     }
@@ -68,7 +68,7 @@ class Paginator
      * 
      * @return int The number of the current page.
      */
-    public function getCurrentPage()
+    public function getCurrentPage(): int
     {
         return $this->currentPage;
     }
@@ -79,7 +79,7 @@ class Paginator
      * 
      * @return int The total number of pages.
      */
-    public function getNumOfPages()
+    public function getNumOfPages(): int
     {
         return $this->numOfPages;
     }
@@ -90,7 +90,7 @@ class Paginator
      * 
      * @return int The number of current page items.
      */
-    public function getCurrentPageLength()
+    public function getCurrentPageLength(): int
     {
         if ($this->isLast()) {
             return $this->numOfItems - ($this->itemsPerPage * ($this->currentPage - 1));
@@ -107,7 +107,7 @@ class Paginator
      * 
      * @return int Current page offset.
      */
-    public function getOffset()
+    public function getOffset(): int
     {
         return $this->itemsPerPage * ($this->currentPage - 1);
     }
@@ -115,7 +115,7 @@ class Paginator
     /**
      * @return int The first page number.
      */
-    public function getFirstPage()
+    public function getFirstPage(): int
     {
         return self::FIRST_PAGE;
     }
@@ -123,7 +123,7 @@ class Paginator
     /**
      * @return int The last page number.
      */
-    public function getLastPage()
+    public function getLastPage(): int
     {
         return $this->numOfPages;
     }
@@ -131,7 +131,7 @@ class Paginator
     /**
      * @return bool True if the current page is the first page, false otherwise.
      */
-    public function isFirst()
+    public function isFirst(): bool
     {
         return $this->currentPage == self::FIRST_PAGE;
     }
@@ -139,15 +139,15 @@ class Paginator
     /**
      * @return bool True if the current page is the last page, false otherwise.
      */
-    public function isLast()
+    public function isLast(): bool
     {
         return $this->numOfItems == 0 ? true : $this->currentPage == $this->numOfPages;
     }
 
     /**
-     * @return int Number of next page, or null if there is no next page.
+     * @return int|null Number of next page, or null if there is no next page.
      */
-    public function getNextPage()
+    public function getNextPage(): ?int
     {
         $nextPage = $this->currentPage + 1;
         
@@ -156,9 +156,9 @@ class Paginator
     
     /**
      * 
-     * @return int Number of previous page, or null if there is no previous page.
+     * @return int|null Number of previous page, or null if there is no previous page.
      */
-    public function getPrevPage()
+    public function getPrevPage(): ?int
     {
         $prevPage = $this->currentPage - 1;
         
@@ -168,9 +168,9 @@ class Paginator
     /**
      * Sets the total number of items and recalculate total number of pages.
      * 
-     * @param int $numOfItems Total number of items to paginate.
+     * @param int|null $numOfItems Total number of items to paginate.
      */
-    public function setNumOfItems($numOfItems)
+    public function setNumOfItems(?int $numOfItems): void
     {
         $this->numOfItems = max(0, (int) $numOfItems);
         $this->initNumOfPages();
@@ -183,9 +183,9 @@ class Paginator
      * 
      * @param int $itemsPerPage Maximum number of items to show per one page.
      */
-    public function setItemsPerPage($itemsPerPage)
+    public function setItemsPerPage(int $itemsPerPage): void
     {
-        $this->itemsPerPage = max(self::ITEMS_PER_PAGE_MIN, (int) $itemsPerPage);
+        $this->itemsPerPage = max(self::ITEMS_PER_PAGE_MIN, $itemsPerPage);
         $this->initNumOfPages();
     }
     
@@ -196,12 +196,12 @@ class Paginator
      * 
      * @param int $page The number of the current page.
      */
-    public function setCurrentPage($page)
+    public function setCurrentPage(int $page): void
     {
         if ($this->numOfItems == 0) {
             $this->currentPage = self::FIRST_PAGE;
         } else {
-            $this->currentPage = min(max(self::FIRST_PAGE, (int) $page), $this->numOfPages);
+            $this->currentPage = min(max(self::FIRST_PAGE, $page), $this->numOfPages);
         }
     }
 
@@ -210,13 +210,16 @@ class Paginator
      * is preset by NUM_OF_PAGES_MIN constant.
      * Maximum number of pages is not limited.
      */
-    protected function initNumOfPages()
+    protected function initNumOfPages(): void
     {
-        if ($this->numOfItems !== null && $this->itemsPerPage !== null) {
+        if (isset($this->numOfItems) && isset($this->itemsPerPage)) {
             $this->numOfPages = max(
                 self::NUM_OF_PAGES_MIN,
                 (int) ceil($this->numOfItems / $this->itemsPerPage)
             );
+            if (isset($this->currentPage)) {
+                $this->setCurrentPage($this->currentPage);
+            }
         }
     }
 }

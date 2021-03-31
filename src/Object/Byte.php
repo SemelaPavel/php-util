@@ -1,4 +1,4 @@
-<?php
+<?php declare (strict_types = 1);
 /*
  * This file is part of the php-util package.
  *
@@ -18,11 +18,18 @@ use SemelaPavel\Object\Exception\ByteParseException;
  * or other binary values like KB, MB, GB and TB and some other useful
  * methods and constants when dealing with a byte.
  * 
+ * Please note that MAX_VALUE depends on the system architecture (32 bit or 64 bit).
+ * 
  * @author Pavel Semela <semela_pavel@centrum.cz>
  */
 class Byte
 {
+    /**
+     * The value is usually int(2147483647) in 32 bit systems
+     * and int(9223372036854775807) in 64 bit systems.
+     */
     const MAX_VALUE = PHP_INT_MAX;
+    
     const MIN_VALUE = 0;
     
     /** Byte value of KiB/KB in JEDEC standard. */
@@ -37,16 +44,18 @@ class Byte
     /** Byte value of TiB/TB in JEDEC standard. */
     const TB = 1099511627776;
     
-    protected $value;
+    protected int $value;
 
     /**
      * Returns new Byte object that represents the specified byte value.
      * 
      * @param int $value The value to be represented by the Byte.
+     * 
+     * @throws \RangeException If the given value is out of range.
      */
-    public function __construct($value)
+    public function __construct(int $value)
     {
-        $this->value = $value;
+        $this->setValue($value);
     }
     
     /**
@@ -62,17 +71,17 @@ class Byte
      * @return Byte New Byte object.
      * 
      * @throws ByteParseException If the given binary unit cannot be recognised.
+     * @throws \RangeException If the given value is out of range.
      */
-    public static function from($value, $unit)
+    public static function from(float $value, string $unit): Byte
     {
-        $byteValue = static::byteValueOfUnit($unit);
+        $byteValue = $value * static::byteValueOfUnit($unit);
         
-        if ($byteValue) {
-            return new static((int) ($value * $byteValue));
-            
-        } else {
-            throw new ByteParseException('The given binary unit cannot be recognised.');
+        if ($byteValue > self::MAX_VALUE) {
+            throw new \RangeException('The value is out of range.');
         }
+        
+        return new static((int) $byteValue);
     }
     
     /**
@@ -91,10 +100,11 @@ class Byte
      * @return Byte New Byte object.
      * 
      * @throws ByteParseException If the given string cannot be parsed as a byte.
+     * @throws \RangeException If the parsed byte value is out of range.
      */
-    public static function parse($byteStr)
+    public static function parse(string $byteStr): Byte
     {
-        $int = '^([1-9][0-9]*)$';
+        $int = '^(0|[1-9][0-9]*)$';
         $b = '^(0|[1-9][0-9]*)\s*(B)$';
         $kmgt = '^((?:0|[1-9][0-9]*)(?:[\.\,][0-9]+)?)\s*([KMGT][i]?B)$';
         $matches = [];
@@ -105,7 +115,7 @@ class Byte
             return static::from((float) str_replace(',', '.', $matches[1]), $matches[2]);
             
         } elseif (count($matches) == 2) {
-             return new static((int) $matches[1]);
+            return static::from((float) $matches[1], 'B');
              
         } else {
             throw new ByteParseException('The given string cannot be parsed as a byte.');
@@ -126,7 +136,7 @@ class Byte
      * 
      * @return Byte New Byte object.
      */
-    public static function fromPhpIniNotation($byteStr)
+    public static function fromPhpIniNotation(string $byteStr): Byte
     {
         $bytes = (int) $byteStr;
         
@@ -158,28 +168,29 @@ class Byte
      * 
      * @throws ByteParseException If the given binary unit cannot be recognised.
      */
-    public function floatValue($unit, $precision = 2)
+    public function floatValue(string $unit, int $precision = 2): float
     {
         $byteValue = static::byteValueOfUnit($unit);
         
-        if ($byteValue) {
-            return (float) round($this->value / $byteValue, $precision);
-            
-        } else {
-            throw new ByteParseException('The given binary unit cannot be recognised.');
-        }
+        return (float) round($this->value / $byteValue, $precision);
     }
 
     /**
-     * Sets the Byte instance value to the specified value.
-     * Returns the Byte instance for method chaining
+     * Sets the Byte instance value to the specified value. Returns the Byte
+     * instance for method chaining. 
      * 
      * @param int $value The value to be represented by the Byte.
      * 
      * @return Byte This instance.
+     * 
+     * @throws \RangeException If the given value is out of range.
      */
-    public function setValue($value)
+    public function setValue(int $value): Byte
     {
+        if ($value < self::MIN_VALUE) {
+            throw new \RangeException('The value is out of range.');
+        }
+        
         $this->value = $value;
         
         return $this;
@@ -190,7 +201,7 @@ class Byte
      * 
      * @return int The numeric value represented by this object.
      */
-    public function getValue()
+    public function getValue(): int
     {
         return $this->value;
     }
@@ -200,20 +211,22 @@ class Byte
      * 
      * @return string The numerical value of this Byte converted to a string.
      */
-    public function __toString()
+    public function __toString(): string
     {
         return (string) $this->value;
     }
-    
+
     /**
      * Returns number of bytes for the given binary unit. 
      * Returns false if the unit cannot be recognised.
      * 
      * @param string $unit Binary unit in ISO/IEC 80000 or JEDEC standard.
      * 
-     * @return boolean|int Number of bytes for the given unit or false.
+     * @return int Number of bytes for the given unit or false.
+     * 
+     * @throws ByteParseException If the given binary unit cannot be recognised.
      */
-    protected static function byteValueOfUnit($unit)
+    protected static function byteValueOfUnit(string $unit): int
     {
         switch (trim($unit)) {
             case 'KB':
@@ -230,7 +243,7 @@ class Byte
                 
             case 'B': return 1;
                 
-            default: return false;
+            default: throw new ByteParseException('The given binary unit cannot be recognised.');
         }
     }
 }

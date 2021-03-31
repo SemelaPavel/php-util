@@ -1,4 +1,4 @@
-<?php
+<?php declare (strict_types = 1);
 /*
  * This file is part of the php-util package.
  *
@@ -23,11 +23,11 @@ use SemelaPavel\Time\LocalDateTime;
  */
 class FileFilter
 {
-    protected $fileNameWhiteList;
-    protected $fileNameBlackList;
-    protected $fileNameRegex;
-    protected $sizePredicates;
-    protected $timePredicates;
+    protected RegexPattern $fileNameWhiteListRegex;
+    protected RegexPattern $fileNameBlackListRegex;
+    protected RegexPattern $fileNameRegex;
+    protected array $sizePredicates = [];
+    protected array $timePredicates = [];
     
     /**
      * Sets the whitelist of allowed file names as an array of shell wildcard patterns.
@@ -40,9 +40,9 @@ class FileFilter
      * 
      * @return FileFilter This instance for methods chaining.
      */
-    public function setFileNameWhiteList($globs, $separator = '/', $caseFold = true)
+    public function setFileNameWhiteList(array $globs, string $separator = '/', bool $caseFold = true): FileFilter
     {
-        $this->fileNameWhiteList = RegexPattern::fromGlobs($globs, $separator, $caseFold);
+        $this->fileNameWhiteListRegex = RegexPattern::fromGlobs($globs, $separator, $caseFold);
         
         return $this;
     }
@@ -58,9 +58,9 @@ class FileFilter
      * 
      * @return FileFilter This instance for methods chaining.
      */
-    public function setFileNameBlackList($globs, $separator = '/', $caseFold = true)
+    public function setFileNameBlackList(array $globs, string $separator = '/', bool $caseFold = true): FileFilter
     {
-        $this->fileNameBlackList = RegexPattern::fromGlobs($globs, $separator, $caseFold);
+        $this->fileNameBlackListRegex = RegexPattern::fromGlobs($globs, $separator, $caseFold);
         
         return $this;
     }
@@ -72,7 +72,7 @@ class FileFilter
      * 
      * @return FileFilter This instance for methods chaining.
      */
-    public function setFileNameRegex(RegexPattern $pattern)
+    public function setFileNameRegex(RegexPattern $pattern): FileFilter
     {
         $this->fileNameRegex = $pattern;
         
@@ -95,20 +95,20 @@ class FileFilter
      * @throws \SemelaPavel\String\Exception\RegexException If an error occurred
      * while running the expression.
      */
-    public function fileNameMatch($fileName)
+    public function fileNameMatch(string $fileName): bool
     {
-        if ($this->fileNameWhiteList && !$this->fileNameWhiteList->match($fileName)) {
+        if (isset($this->fileNameWhiteListRegex) && !$this->fileNameWhiteListRegex->match($fileName)) {
                
             return false;
         }
         
-        if ($this->fileNameBlackList && $this->fileNameBlackList->match($fileName)) {
+        if (isset($this->fileNameBlackListRegex) && $this->fileNameBlackListRegex->match($fileName)) {
 
                 
             return false;
         }
      
-        if ($this->fileNameRegex && !$this->fileNameRegex->match($fileName)) {
+        if (isset($this->fileNameRegex) && !$this->fileNameRegex->match($fileName)) {
             
             return false;
         }
@@ -137,13 +137,14 @@ class FileFilter
      * @throws \InvalidArgumentException If the predicate format cannot be recognized.
      * @throws \SemelaPavel\Object\Exception\ByteParseException If number in predicate
      * string cannot be parsed as a byte.
+     * @throws \RangeException If the parsed byte value is out of range.
      */
-    public function setFileSize($predicate)
+    public function setFileSize($predicate): FileFilter
     {
         if (is_int($predicate)) {
             $this->sizePredicates[''] = $predicate;
         } else {
-            $parts = $this->splitPredicate($predicate);
+            $parts = $this->splitPredicate((string) $predicate);
             $count = count($parts);
 
             for ($i = 1; $i < $count; $i++) {
@@ -161,7 +162,7 @@ class FileFilter
      * 
      * @return boolean True if the file size match the file size predicate, otherwise false.
      */
-    public function compareFileSize($fileSize)
+    public function compareFileSize(int $fileSize): bool
     {
         foreach ($this->sizePredicates as $operator => $rop) {
             if (!$this->compare($fileSize, $operator, $rop)) {
@@ -196,12 +197,12 @@ class FileFilter
      * @throws \SemelaPavel\Time\Exception\DateTimeParseException If the text cannot
      * be parsed as date-time.
      */
-    public function setMTime($predicate)
+    public function setMTime($predicate): FileFilter
     {
         if ($predicate instanceof \DateTimeInterface) {
             $this->timePredicates[''] = $predicate;
         } else {
-            $parts = $this->splitPredicate($predicate);
+            $parts = $this->splitPredicate((string) $predicate);
             $count = count($parts);
 
             for ($i = 1; $i < $count; $i++) {
@@ -222,10 +223,10 @@ class FileFilter
      * 
      * @return boolean True if the date-time match date-time predicate, otherwise false.
      */
-    public function compareMTime($time)
+    public function compareMTime($time): bool
     {
         foreach ($this->timePredicates as $operator => $rop) {
-            if (!$this->compare(LocalDateTime::parse($time), $operator, $rop)) {
+            if (!$this->compare(LocalDateTime::parse((string) $time), $operator, $rop)) {
                 
                 return false;
             }
@@ -247,13 +248,13 @@ class FileFilter
      * 
      * @throws \InvalidArgumentException If the predicate format cannot be recognized.
      */
-    protected function splitPredicate($predicate)
+    protected function splitPredicate(string $predicate): array
     {
         $p = '\s*([<>=]|[<>]\=?|\=?[<>]|<>)\s*(\d+.*)';
         $pattern = new RegexPattern("(?|(?:^{$p}{$p})|^{$p}|^(\s*)(\d+.*))");
         $matches = [];
         
-        if (!\preg_match($pattern, trim($predicate), $matches)) {
+        if (!\preg_match((string) $pattern, trim($predicate), $matches)) {
             
             throw new \InvalidArgumentException('The predicate format cannot be recognized.');
         }
@@ -272,7 +273,7 @@ class FileFilter
      * 
      * @throws \InvalidArgumentException If the operator cannot be recognized.
      */
-    protected function compare($lop, $operator, $rop)
+    protected function compare($lop, string $operator, $rop): bool
     {
         switch ($operator) {
             case '>':

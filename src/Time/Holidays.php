@@ -1,4 +1,4 @@
-<?php
+<?php declare (strict_types = 1);
 /*
  * This file is part of the php-util package.
  *
@@ -21,41 +21,31 @@ class Holidays implements \ArrayAccess
     /** 
      * @var array Associative array of YYYY-MM-DD and holiday description. 
      */
-    protected $holidays = [];
+    protected array $holidays = [];
 
     /**
      * Calculates Easter date for given year.
      * 
-     * @param string $year Year in YYYY format.
+     * @param int $year Year.
      * 
-     * @return \DateTime New \DateTime object with Easter date.
-     * 
-     * @throws \InvalidArgumentException If given year is not in right format.
+     * @return \DateTime Easter date.
      */
-    public static function easter($year)
+    public static function easter(int $year): \DateTime
     {
         $base = \DateTime::createFromFormat("Y-m-d|", "{$year}-03-21");
-        
-        if ($base) {
-            $days = easter_days($year);
+        $days = easter_days($year);
             
-            return $base->add(new \DateInterval("P{$days}D"));
-            
-        } else {
-            throw new \InvalidArgumentException('String is not in YYYY format!');
-        } 
+        return $base->add(new \DateInterval("P{$days}D"));
     }
 
     /**
      * Calculates date of Good Friday day for given year.
      * 
-     * @param string $year Year in YYYY format.
+     * @param int $year Year.
      * 
-     * @return \DateTime New \DateTime object with Good Friday date.
-     * 
-     * @throws \InvalidArgumentException If given year is not in right format.
+     * @return \DateTime Good Friday date.
      */
-    public static function goodFriday($year)
+    public static function goodFriday(int $year): \DateTime
     {
         return static::easter($year)->sub(new \DateInterval("P2D"));
     }
@@ -63,13 +53,11 @@ class Holidays implements \ArrayAccess
     /**
      * Calculates date of Easter Monday day for given year.
      * 
-     * @param string $year Year in YYYY format.
+     * @param int $year Year.
      * 
-     * @return \DateTime New \DateTime object with Easter Monday date.
-     * 
-     * @throws \InvalidArgumentException If given year is not in right format.
+     * @return \DateTime Easter Monday date.
      */
-    public static function easterMonday($year)
+    public static function easterMonday(int $year): \DateTime
     {
         return static::easter($year)->add(new \DateInterval("P1D"));
     }
@@ -81,7 +69,7 @@ class Holidays implements \ArrayAccess
      * 
      * @return bool TRUE if the key exists in holidays array or FALSE if not.
      */
-    public function offsetExists($date)
+    public function offsetExists($date): bool
     {
         try {
             
@@ -116,7 +104,7 @@ class Holidays implements \ArrayAccess
      * 
      * @throws \InvalidArgumentException If given date is not in right format.
      */
-    public function offsetSet($date, $name)
+    public function offsetSet($date, $name): void
     {
         $this->holidays[$this->parseOffset($date)] = $name;
     }
@@ -126,7 +114,7 @@ class Holidays implements \ArrayAccess
      * 
      * @param \DateTimeInterface|string $date DateTime... or string as YYYY-MM-DD.
      */
-    public function offsetUnset($date)
+    public function offsetUnset($date): void
     {
         try {
             
@@ -142,7 +130,7 @@ class Holidays implements \ArrayAccess
      * 
      * @return array Internal array of ArrayAccess object.
      */
-    public function toArray()
+    public function toArray(): array
     {
         return $this->holidays;
     }
@@ -157,7 +145,7 @@ class Holidays implements \ArrayAccess
      * 
      * @throws \InvalidArgumentException If given date is not in right format.
      */
-    protected function parseOffset($date)
+    protected function parseOffset($date): string
     {
         if (!($date instanceof \DateTimeInterface)) {
             $date = \DateTime::createFromFormat("Y-m-d|", strval($date));

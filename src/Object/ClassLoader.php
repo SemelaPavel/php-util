@@ -1,4 +1,4 @@
-<?php
+<?php declare (strict_types = 1);
 /*
  * This file is part of the php-util package.
  *
@@ -24,8 +24,8 @@ namespace SemelaPavel\Object;
  * 
  * If the file cannot not be found, or if it does not have 'SemelaPavel' prefix,
  * the classloader will try to find a file by the fully-qualified class name
- * in __DIR__ . '/src/other directory.
- * e.g. \Namespace1\Namespace2\Class should be found as '/src/other/Namespace1/Namespace2/Class.php'
+ * in '/src/other' directory. e.g. \Namespace1\Namespace2\Class should be found
+ * as '/src/other/Namespace1/Namespace2/Class.php'
  * 
  * It is possible to add more alternate directories for one namespace and
  * it is also possible to add more namespaces. It is also possible to add
@@ -45,7 +45,7 @@ class ClassLoader
      * 
      * @var array Namespace prefixes and their paths.
      */
-    protected $prefixes = [];
+    protected array $prefixes = [];
     
     /**
      * Array of the first letters of the prefixes and the lengths of the prefixes
@@ -55,7 +55,7 @@ class ClassLoader
      * 
      * @var array
      */
-    protected $pLengths = [];
+    protected array $pLengths = [];
     
     /**
      * This array contains paths to search a file by fully-qualified class names.
@@ -64,7 +64,7 @@ class ClassLoader
      * 
      * @var array 
      */
-    protected $directories = [];
+    protected array $directories = [];
     
     /**
      * Adds namespace prefix and its base directory to the classloader
@@ -75,7 +75,7 @@ class ClassLoader
      * @param string $prefix Namespace prefix.
      * @param string $baseDir Base directory where autoloader can find classes.
      */
-    public function addNamespace($prefix, $baseDir)
+    public function addNamespace(string $prefix, string $baseDir): void
     {
         $prefix = trim($prefix, "\\");
         
@@ -89,7 +89,7 @@ class ClassLoader
      * 
      * @param string $dir Directory path.
      */
-    public function addDirectory($dir)
+    public function addDirectory(string $dir): void
     {
         $this->directories[] = rtrim($dir, "\\/");
     }
@@ -97,7 +97,7 @@ class ClassLoader
     /**
      * Registers autoloader.
      */
-    public function register()
+    public function register(): void
     {
         spl_autoload_register(array($this, "loadClass"));
     }
@@ -105,7 +105,7 @@ class ClassLoader
     /**
      * Unregisters autoloader.
      */
-    public function unRegister()
+    public function unRegister(): void
     {
         spl_autoload_unregister(array($this, "loadClass"));
     }
@@ -118,7 +118,7 @@ class ClassLoader
      * 
      * @return bool True on success, False if class file cannot be loaded.
      */
-    public function loadClass($class)
+    public function loadClass(string $class): bool
     {
         $class = ltrim($class, '\\');
         
@@ -150,11 +150,11 @@ class ClassLoader
      * class name and its namespace prefix.
      * 
      * @param string $class The fully-qualified class name.
-     * @param string $prefixPos Position of the last char in the prefix including '\'.
+     * @param int $prefixPos Position of the last char in the prefix including '\'.
      * 
      * @return boolean True if the file with class has been successfully loaded.
      */
-    protected function findFileByPrefix($class, $prefixPos)
+    protected function findFileByPrefix(string $class, int $prefixPos): bool
     {
         $prefix = substr($class, 0, $prefixPos);
 
@@ -180,7 +180,7 @@ class ClassLoader
      * 
      * @return boolean True if the file with class has been successfully loaded.
      */
-    protected function findFileByFullPath($class)
+    protected function findFileByFullPath(string $class): bool
     {
         $file = $class . ".php";
         foreach ($this->directories as $dir) {
@@ -200,7 +200,7 @@ class ClassLoader
      * 
      * @return bool True if the file exists, false if not.
      */
-    protected function requireFile($file)
+    protected function requireFile(string $file): bool
     {
         if (is_file($file)) {
             require $file;

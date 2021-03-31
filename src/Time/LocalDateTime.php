@@ -1,4 +1,4 @@
-<?php
+<?php declare (strict_types = 1);
 /*
  * This file is part of the php-util package.
  *
@@ -33,7 +33,7 @@ class LocalDateTime
      * 
      * @param \DateTimeZone $timezone Time zone.
      */
-    public static function setLocalTimeZone(\DateTimeZone $timezone)
+    public static function setLocalTimeZone(\DateTimeZone $timezone): void
     {
         date_default_timezone_set($timezone->getName());
     }
@@ -43,7 +43,7 @@ class LocalDateTime
      * 
      * @return \DateTimeZone Default TimeZone.
      */
-    public static function getLocalTimeZone()
+    public static function getLocalTimeZone(): \DateTimeZone
     {
         return new \DateTimeZone(date_default_timezone_get());
     }
@@ -56,17 +56,18 @@ class LocalDateTime
      * 
      * @return \DateTime New \DateTime instance.
      * 
-     * @throws \InvalidArgumentException If given format is not valid.
+     * @throws \InvalidArgumentException If the given format does not result in a valid date-time.
      */
-    public static function now($format = null)
+    public static function now(string $format = null): \DateTime
     {
         if ($format != null) {
             $dateTimeStr = (new \DateTime())->format($format);
             
-            if ($dateTimeStr) {
+            try {
+                
                 return new \DateTime($dateTimeStr);
 
-            } else {
+            } catch (\Exception $e) {
                 throw new \InvalidArgumentException(
                     "Given format is not a valid DateTime format."
                 );
@@ -81,7 +82,7 @@ class LocalDateTime
      * 
      * @return \DateTime New \DateTime instance.
      */
-    public static function today()
+    public static function today(): \DateTime
     {
         return static::now(self::ISO_DATE);
     }
@@ -91,22 +92,13 @@ class LocalDateTime
      * timestamp in seconds from the epoch of 1970-01-01T00:00:00Z.
      * The resulting time is adjusted according to the default local time zone. 
      *
-     * @param int|string $epochSeconds Seconds from the epoch of 1970-01-01T00:00:00Z.
+     * @param int $epochSeconds Seconds from the epoch of 1970-01-01T00:00:00Z.
      * 
      * @return \DateTime New \DateTime instance.
-     * 
-     * @throws \InvalidArgumentException If given number is not a valid timestamp.
      */
-    public static function ofUnixTimestamp($epochSeconds)
+    public static function ofUnixTimestamp(int $epochSeconds): \DateTime
     {
-        try {
-            return static::parse(strval($epochSeconds), 'U');
-            
-        } catch (DateTimeParseException $e) {
-            throw new \InvalidArgumentException(
-                "Given number is not a valid unix timestamp."
-            );
-        }
+        return static::parse(strval($epochSeconds), 'U');
     }
 
     /**
@@ -117,7 +109,7 @@ class LocalDateTime
      * 
      * @return string Normalized date-time string.
      */
-    public static function normalize($text)
+    public static function normalize(string $text): string
     {
         $patterns = array(
             '#([\-\.\:/\+])\s+#',
@@ -142,7 +134,7 @@ class LocalDateTime
      * 
      * @throws DateTimeParseException If the text cannot be parsed.
      */
-    public static function parse($text, $format = null)
+    public static function parse(string $text, string $format = null): \DateTime 
     {
         try {
             if ($format == null) {                
@@ -168,7 +160,7 @@ class LocalDateTime
      * 
      * @throws DateTimeParseException If the text cannot be parsed.
      */
-    protected static function parseText($text)
+    protected static function parseText(string $text): \DateTime
     {
         try {
             return new \DateTime(is_numeric($text) ? '@' . $text : $text);
@@ -192,7 +184,7 @@ class LocalDateTime
      * 
      * @throws DateTimeParseException If the text cannot be parsed.
      */
-    protected static function parseFormat($text, $format)
+    protected static function parseFormat(string $text, string $format): \DateTime
     {
         $dateTime = \DateTime::createFromFormat($format, $text);
         

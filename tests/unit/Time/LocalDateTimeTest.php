@@ -1,4 +1,4 @@
-<?php
+<?php declare (strict_types = 1);
 /*
  * This file is part of the php-util package.
  *
@@ -14,6 +14,9 @@ use SemelaPavel\Time\LocalDateTime;
 
 /**
  * @author Pavel Semela <semela_pavel@centrum.cz>
+ * 
+ * @covers \SemelaPavel\Time\LocalDateTime
+ * @uses \SemelaPavel\Time\Exception\DateTimeParseException
  */
 final class LocalDateTimeTest extends TestCase
 {
@@ -56,6 +59,17 @@ final class LocalDateTimeTest extends TestCase
             new \DateTime((new \DateTime())->format($format)),
             LocalDateTime::now($format)
         );
+        
+        $this->assertSame(
+            (new \DateTime())->format($format),
+            LocalDateTime::now('')->format($format)
+        );
+    }
+    
+    public function testNowInvalidArgumentException()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        LocalDateTime::now('not a valid format');
     }
     
     public function testToday()
@@ -81,12 +95,6 @@ final class LocalDateTimeTest extends TestCase
             $dateTime,
             LocalDateTime::ofUnixTimestamp(self::TIMESTAMP)    
         );
-    }
-    
-    public function testOfUnixTimestampException()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-        LocalDateTime::ofUnixTimestamp('not a timestamp');
     }
     
     public function testNormalize()
@@ -121,7 +129,7 @@ final class LocalDateTimeTest extends TestCase
         
         $this->assertEquals(
             new \DateTime('@' . self::TIMESTAMP), 
-            LocalDateTime::parse(self::TIMESTAMP)
+            LocalDateTime::parse(strval(self::TIMESTAMP))
         );
     }
     

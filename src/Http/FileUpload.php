@@ -1,4 +1,4 @@
-<?php
+<?php declare (strict_types = 1);
 /*
  * This file is part of the php-util package.
  *
@@ -25,7 +25,7 @@ class FileUpload
     /**
      * @var array All uploaded files, including empty HTML inputs.
      */
-    protected $files = [];
+    protected array $files = [];
     
     /**
      * Creates instance of FileUpload class and initializes this instance from
@@ -60,7 +60,7 @@ class FileUpload
      * 
      * @throws \LengthException If upload exceeds the post_max_size directive in php.ini.
      */
-    public function getUploadedFiles()
+    public function getUploadedFiles(): array
     {
         if (isset($_SERVER['CONTENT_LENGTH'])) {
             if ($_SERVER['CONTENT_LENGTH'] > static::maxPostSize()) {
@@ -80,7 +80,7 @@ class FileUpload
      * 
      * @return int The number of files allowed to be uploaded simultaneously.
      */
-    public static function maxFileUploads()
+    public static function maxFileUploads(): int
     {
         return (int) ini_get('max_file_uploads');
     }
@@ -95,7 +95,7 @@ class FileUpload
      * 
      * @return int The maximum size of post data in bytes.
      */
-    public static function maxPostSize()
+    public static function maxPostSize(): int
     {
         $iniPostLimit = ini_get('post_max_size');
         
@@ -118,7 +118,7 @@ class FileUpload
      * 
      * @return int The maximum size in bytes of an uploaded file.
      */
-    public static function maxUploadFileSize()
+    public static function maxUploadFileSize(): int
     {
         $fileSizeLimit = Byte::fromPhpIniNotation(ini_get('upload_max_filesize'));
 
@@ -137,7 +137,7 @@ class FileUpload
      * 
      * @return array An array tree of UploadedFile instances or null values.
      */
-    protected function processUploadedFiles($uploadedFiles)
+    protected function processUploadedFiles(array $uploadedFiles): array
     {
         $files = [];
         
@@ -170,7 +170,7 @@ class FileUpload
      * 
      * @return UploadedFile|null Uploaded file metadata as UploadedFile or null.
      */
-    protected function processFile($uploadedFile)
+    protected function processFile(array $uploadedFile): ?UploadedFile
     {
         if ($uploadedFile['error'] !== UPLOAD_ERR_NO_FILE) {
             $file = new UploadedFile(

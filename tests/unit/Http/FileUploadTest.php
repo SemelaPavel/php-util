@@ -1,4 +1,4 @@
-<?php
+<?php declare (strict_types = 1);
 /*
  * This file is part of the php-util package.
  *
@@ -14,6 +14,9 @@ use SemelaPavel\Http\UploadedFile;
 
 /**
  * @author Pavel Semela <semela_pavel@centrum.cz>
+ * 
+ * @covers \SemelaPavel\Http\FileUpload
+ * @uses \SemelaPavel\Http\UploadedFile
  */
 final class FileUploadTest extends TestCase
 {

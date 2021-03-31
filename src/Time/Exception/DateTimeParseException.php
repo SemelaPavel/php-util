@@ -15,7 +15,7 @@ namespace SemelaPavel\Time\Exception;
  * 
  * @author Pavel Semela <semela_pavel@centrum.cz>
  */
-class DateTimeParseException extends \Exception
+class DateTimeParseException extends \RuntimeException
 {
     protected $message = 'The string cannot be parsed as a date-time.';
 }

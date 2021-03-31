@@ -18,7 +18,7 @@ $maxUploadFilesize = Byte::fromPhpIniNotation(ini_get('upload_max_filesize'));
         <th>&nbsp;</th><th>B</th><th>KB</th><th>MB</th><th>GB</th>
     </tr>
     <tr>
-        <td><strong>From MAX_VALUE:</strong></td>
+        <td><strong>From PHP_INT_MAX:</strong></td>
         <td><?= $byteMax; ?></td>
         <td><?= $byteMax->floatValue('KB'); ?></td>
         <td><?= $byteMax->floatValue('MB'); ?></td>

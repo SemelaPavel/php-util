@@ -1,4 +1,4 @@
-<?php
+<?php declare (strict_types = 1);
 /*
  * This file is part of the php-util package.
  *
@@ -10,18 +10,19 @@
 
 namespace SemelaPavel\Http;
 
-use SemelaPavel\Http\Exception\FileUploadException;
-use SemelaPavel\Http\Exception\IniFileSizeException;
-use SemelaPavel\Http\Exception\FormFileSizeException;
-use SemelaPavel\Http\Exception\PartialFileException;
-use SemelaPavel\Http\Exception\NoFileUploadedException;
-use SemelaPavel\Http\Exception\NoTmpDirException;
-use SemelaPavel\Http\Exception\FileWriteException;
-use SemelaPavel\Http\Exception\UploadStoppedException;
+use SemelaPavel\Http\Exception\{
+    FileUploadException,
+    IniFileSizeException,
+    FormFileSizeException,
+    PartialFileException,
+    NoFileUploadedException,
+    NoTmpDirException,
+    FileWriteException,
+    UploadStoppedException
+};
 
 use SemelaPavel\File\File;
-use SemelaPavel\File\Exception\FileException;
-use SemelaPavel\File\Exception\InvalidFileNameException;
+use SemelaPavel\File\Exception\{FileException, InvalidFileNameException};
 
 /**
  * An instance of this class represents a file uploaded via an HTTP request.
@@ -33,7 +34,7 @@ class UploadedFile extends File
     /**
      * @var array Pairs of upload error codes and corresponding error messages. 
      */
-    protected static $errors = [
+    protected static array $errors = [
         \UPLOAD_ERR_INI_SIZE => 'The file "%s" exceeds the upload_max_filesize ini directive.',
         \UPLOAD_ERR_FORM_SIZE => 'The file "%s" exceeds the MAX_FILE_SIZE directive in HTML form.',
         \UPLOAD_ERR_PARTIAL => 'The file "%s" was only partially uploaded.',
@@ -43,9 +44,9 @@ class UploadedFile extends File
         \UPLOAD_ERR_EXTENSION => 'A PHP extension stopped the upload of the "%s" file.'
     ];
 
-    protected $clientFileName;
-    protected $size;
-    protected $error;
+    protected string $clientFileName;
+    protected int $size;
+    protected int $error;
     
     /**
      * Creates an instance representing a file uploaded via an HTTP request.
@@ -55,7 +56,7 @@ class UploadedFile extends File
      * @param int $size The file size in bytes.
      * @param int $error The UPLOAD_ERR_XXX code.
      */
-    public function __construct($tmpPathName, $clientFileName, $size, $error)
+    public function __construct(string $tmpPathName, string $clientFileName, int $size, int $error)
     {
         $this->clientFileName = $clientFileName;
         $this->size = $size;
@@ -73,7 +74,7 @@ class UploadedFile extends File
      * 
      * @return string The filename sent by the client.
      */
-    public function getClientFilename()
+    public function getClientFilename(): string
     {
         return $this->clientFileName;
     }
@@ -83,7 +84,7 @@ class UploadedFile extends File
      * 
      * @return int The file size in bytes.
      */
-    public function getSize()
+    public function getSize(): int
     {
         return $this->size;
     }
@@ -95,7 +96,7 @@ class UploadedFile extends File
      * 
      * @return int One of PHP's UPLOAD_ERR_XXX constants.
      */
-    public function getError()
+    public function getError(): int
     {
         return $this->error;
     }
@@ -106,7 +107,7 @@ class UploadedFile extends File
      * 
      * @return bool True if the file was uploaded successfully.
      */
-    public function isUploaded()
+    public function isUploaded(): bool
     {
         return \UPLOAD_ERR_OK === $this->error && $this->isUploadedFile();
     }
@@ -114,7 +115,7 @@ class UploadedFile extends File
     /**
      * {@inheritdoc}
      */
-    public function hasValidName()
+    public function hasValidName(): bool
     {
         return static::isValidFileName($this->getClientFilename());
     }
@@ -140,7 +141,7 @@ class UploadedFile extends File
      * @throws InvalidFileNameException If the file name is not valid or safe.
      * @throws FileException If unable to write or create target directory.
      */
-    public function move($targetPath, $newFileName = null)
+    public function move(string $targetPath, string $newFileName = null): File
     {
         if (!$this->isUploaded()) {
             $this->throwUploadErrException();
@@ -189,7 +190,7 @@ class UploadedFile extends File
      * 
      * @throws FileException If the directory could not be created or written to.
      */
-    protected function prepareTargetDirectory($targetPath)
+    protected function prepareTargetDirectory(string $targetPath): string
     {
         $targetPath = static::rtrimFileName($targetPath);
         
@@ -210,7 +211,7 @@ class UploadedFile extends File
      * 
      * @return bool True if the file was uploaded via HTTP POST, false otherwise.
      */
-    protected function isUploadedFile()
+    protected function isUploadedFile(): bool
     {
         return \is_uploaded_file($this->getPathname());
     }
@@ -225,7 +226,7 @@ class UploadedFile extends File
      * 
      * @return bool True on success, false if the source file is not valid, or cannot be moved.
      */
-    protected function moveUploadedFile($sourcePathName, $targetPathName)
+    protected function moveUploadedFile(string $sourcePathName, string $targetPathName): bool
     {
         return \move_uploaded_file($sourcePathName, $targetPathName);
     }
@@ -237,7 +238,7 @@ class UploadedFile extends File
      * 
      * @throws FileUploadException Upload error specific exception.
      */
-    protected function throwUploadErrException()
+    protected function throwUploadErrException(): void
     {
         switch ($this->error) {
             case \UPLOAD_ERR_OK:
@@ -275,7 +276,7 @@ class UploadedFile extends File
      * 
      * @return string Formatted error message corresponding to the upload error code.
      */
-    protected function getUploadErrMessage()
+    protected function getUploadErrMessage(): string
     {
         if (isset(static::$errors[$this->error])) {
             $message = sprintf(static::$errors[$this->error], $this->clientFileName);

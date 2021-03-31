@@ -1,4 +1,4 @@
-<?php
+<?php declare (strict_types = 1);
 /*
  * This file is part of the php-util package.
  *
@@ -14,8 +14,8 @@ use SemelaPavel\String\Exception\RegexException;
 
 /**
  * This class represents a regular expression pattern. The resulting pattern
- * can then be used directly in PHP PCRE functions. An object of this class
- * is immutable.
+ * can then be used directly in PHP PCRE functions (you should cast to a string
+ * if strict_types 1 is set). An object of this class is immutable.
  * 
  * @author Pavel Semela <semela_pavel@centrum.cz>
  */
@@ -50,13 +50,14 @@ class RegexPattern
         \PREG_BAD_UTF8_OFFSET_ERROR => 'The offset did not correspond to the beginning of a valid UTF-8 code point.'
     ];
     
-    protected $regex;
-    protected $flags;
-    protected $compiledPattern;
+    protected string $regex;
+    protected int $flags;
+    protected string $compiledPattern;
     
     /**
      * Returns new RegexPattern object that represents the resulting pattern
-     * that can be used directly in PHP PCRE functions.
+     * that can be used directly in PHP PCRE functions (you should cast to a string
+     * if strict_types 1 is set).
      * 
      * If you need to safely include a literal string into the pattern, use an array
      * of placeholders in pairs with values to include.
@@ -76,7 +77,7 @@ class RegexPattern
      * @param int $flags A bit mask of match flags (PCRE modifiers).
      * @param array $binds Values and their binds to a corresponding named placeholders.
      */
-    public function __construct($regex, $flags = null, $binds = null)
+    public function __construct(string $regex, int $flags = 0, array $binds = [])
     {
         
         $this->regex = $this->bindValues($binds, $regex);
@@ -109,12 +110,12 @@ class RegexPattern
      * 
      * @return RegexPattern New object that represents the resulting pattern.
      */
-    public static function fromGlob($pattern, $separator = '/', $caseFold = true)
+    public static function fromGlob(string $pattern, string $separator = '/', bool $caseFold = true): RegexPattern
     {
-        $regexFlags = $caseFold ? self::CASE_INSENSITIVE : null;
+        $regexFlags = $caseFold ? self::CASE_INSENSITIVE : 0;
         $regex = static::globToRegex($pattern, $separator);
         
-        return new static('^' . $regex . '$', $regexFlags, null);
+        return new static('^' . $regex . '$', $regexFlags, []);
     }
     
     /**
@@ -129,9 +130,9 @@ class RegexPattern
      * 
      * @return RegexPattern New object that represents the resulting pattern.
      */
-    public static function fromGlobs($patterns, $separator = '/', $caseFold = true)
+    public static function fromGlobs(array $patterns, string $separator = '/', bool $caseFold = true): RegexPattern
     {
-        $regexFlags = $caseFold ? self::CASE_INSENSITIVE : null;
+        $regexFlags = $caseFold ? self::CASE_INSENSITIVE : 0;
         $regex = '';
         
         foreach ($patterns as $pattern) {
@@ -141,7 +142,7 @@ class RegexPattern
             $regex .= '(^' . static::globToRegex($pattern, $separator) . '$)';
         }
         
-        return new static($regex, $regexFlags, null);
+        return new static($regex, $regexFlags, []);
     }
 
     /**
@@ -157,7 +158,7 @@ class RegexPattern
      * 
      * @return string A literal string replacement.
      */
-    public static function quote($str, $delimiter = null)
+    public static function quote(string $str, string $delimiter = ''): string
     {
         $str = \preg_quote($str, $delimiter);
         
@@ -174,7 +175,7 @@ class RegexPattern
      * 
      * @return string The source of this pattern.
      */
-    public function getRegex()
+    public function getRegex(): string
     {
         return $this->regex;
     }
@@ -184,7 +185,7 @@ class RegexPattern
      * 
      * @return int The match flags specified when this pattern was compiled.
      */
-    public function getFlags()
+    public function getFlags(): int
     {
         return $this->flags;
     }
@@ -194,7 +195,7 @@ class RegexPattern
      * 
      * @return bool True if the pattern is valid, false otherwise.
      */
-    public function isValid()
+    public function isValid(): bool
     {
         try {
             $this->match('');
@@ -214,7 +215,7 @@ class RegexPattern
      * 
      * @throws RegexException If an error occurred while running the expression.
      */
-    public function match($subject)
+    public function match(string $subject): bool
     {
         $warning = '';
         
@@ -243,7 +244,7 @@ class RegexPattern
      * 
      * @return string The string representation of this pattern.
      */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->compiledPattern;
     }
@@ -258,7 +259,7 @@ class RegexPattern
      * 
      * @return string Glob translated into regex.
      */
-    protected static function globToRegex($glob, $separator = '/')
+    protected static function globToRegex(string $glob, string $separator = '/'): string
     {
         $slen = strlen($separator);
         $exclude = ']';
@@ -291,14 +292,10 @@ class RegexPattern
      * @param array $binds Values and their binds to a corresponding named placeholders.
      * @param string $regex The regular expression (without PCRE delimiter and modifiers).
      * 
-     * @return string
+     * @return string Regex string with placeholders replaced by the given binds.
      */
-    protected function bindValues($binds, $regex)
+    protected function bindValues(array $binds, string $regex): string
     {
-        if ($binds == null) {
-            $binds = [];
-        }
-                
         $tr = [];
                 
         foreach ($binds as $key => $value) {
@@ -315,7 +312,7 @@ class RegexPattern
      * 
      * @return string PCRE regex modifiers set.
      */
-    protected function getModifiersFromFlags($flags)
+    protected function getModifiersFromFlags(int $flags): string
     {
         $modifiers = '';
         
@@ -346,13 +343,13 @@ class RegexPattern
      * 
      * @return string A complete pattern from the regex, delimiter and the given flags.
      */
-    protected function compilePattern($regex, $flags)
+    protected function compilePattern(string $regex, int $flags): string
     {
         $compiledPattern = self::DELIMITER;
         $compiledPattern .= str_replace(self::DELIMITER, '\\' . self::DELIMITER, $regex);
         $compiledPattern .= self::DELIMITER;
 
-       if ($flags !== null) {
+       if ($flags) {
             $compiledPattern .= static::getModifiersFromFlags($flags);
         }
         

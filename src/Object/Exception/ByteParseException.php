@@ -15,7 +15,7 @@ namespace SemelaPavel\Object\Exception;
  * 
  * @author Pavel Semela <semela_pavel@centrum.cz>
  */
-class ByteParseException extends \Exception
+class ByteParseException extends \RuntimeException
 {
     protected $message = 'The given string or number cannot be parsed as a byte.';
 }

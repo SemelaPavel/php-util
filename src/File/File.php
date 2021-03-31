@@ -1,4 +1,4 @@
-<?php
+<?php declare (strict_types = 1);
 /*
  * This file is part of the php-util package.
  *
@@ -10,8 +10,7 @@
 
 namespace SemelaPavel\File;
 
-use SemelaPavel\File\Exception\FileNotFoundException;
-use SemelaPavel\File\Exception\FileException;
+use SemelaPavel\File\Exception\{FileNotFoundException, FileException};
 
 /**
  * An instance of this class represents a file in the file system.
@@ -47,7 +46,7 @@ class File extends \SplFileInfo
      *  
      * @param string $fileName The file name or full path.
      */
-    public function __construct($fileName)
+    public function __construct(string $fileName)
     {
         parent::__construct($fileName);
     }
@@ -60,7 +59,7 @@ class File extends \SplFileInfo
      * @throws FileNotFoundException If the file doest not exist.
      * @throws FileException If the file cannot be read.
      */
-    public function getContents()
+    public function getContents(): string
     {
         if (!$this->isFile()) {
             throw new FileNotFoundException(sprintf('The file "%s" does not exist.', $this->getPathname()));
@@ -95,7 +94,7 @@ class File extends \SplFileInfo
      * 
      * @return string|null MIME format (e.g. "text/plain") or null on failure.
      */
-    public function getMimeType()
+    public function getMimeType(): ?string
     {
         return $this->isReadable() ? \mime_content_type($this->getPathname()) : null;
     }
@@ -105,7 +104,7 @@ class File extends \SplFileInfo
      * 
      * @return boolean True if the file name is valid, false otherwise.
      */    
-    public function hasValidName()
+    public function hasValidName(): bool
     {
         return static::isValidFileName($this->getFilename());
     }
@@ -118,7 +117,7 @@ class File extends \SplFileInfo
      * 
      * @return string The modified file name.
      */
-    public static function rtrimFileName($fileName)
+    public static function rtrimFileName(string $fileName): string
     {
         return rtrim($fileName, "\x00..\x1F \x7F\xFF\\/.");
     }
@@ -139,7 +138,7 @@ class File extends \SplFileInfo
      * 
      * @return boolean True if the file name is valid, false otherwise.
      */
-    public static function isValidFileName($fileName)
+    public static function isValidFileName(string $fileName): bool
     {
         if (mb_strlen($fileName) > self::MAX_FILENAME_LENGTH) {
             return false;

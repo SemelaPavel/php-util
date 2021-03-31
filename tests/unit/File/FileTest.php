@@ -1,4 +1,4 @@
-<?php
+<?php declare (strict_types = 1);
 /*
  * This file is part of the php-util package.
  *
@@ -14,6 +14,9 @@ use SemelaPavel\File\File;
 
 /**
  * @author Pavel Semela <semela_pavel@centrum.cz>
+ * 
+ * @covers \SemelaPavel\File\File
+ * @uses \org\bovigo\vfs\vfsStream
  */
 final class FileTest extends TestCase
 {
@@ -74,51 +77,74 @@ final class FileTest extends TestCase
         $this->assertSame(null, $invFile->getMimeType());
     }
     
-    /**
-     * @see FileTest::testIsValidFileName()
-     */
-    public function testHasValidName()
+    public function fileNamesProvider()
     {
-        $invFile1 = new File(' ');
-        $invFile2 = new File(' . . ');
-        $invFile3 = new File('-file.txt');
-        $invFile4 = new File('COM3.txt');
-        $invFile5 = new File('file?.txt');
-        
-        $this->assertTrue($this->file->hasValidName());
-        
-        $this->assertFalse($invFile1->hasValidName());
-        $this->assertFalse($invFile2->hasValidName());
-        $this->assertFalse($invFile3->hasValidName());
-        $this->assertFalse($invFile4->hasValidName());
-        $this->assertFalse($invFile5->hasValidName());
+        return [
+            ['file.txt', true],
+            [' ', false],
+            [' . . ', false],
+            ['-file.txt', false],
+            ['COM3.txt', false],
+            ['file?.txt', false]
+        ];
     }
     
-    public function testRtrimFileName()
+    /**
+     * @dataProvider fileNamesProvider
+     */
+    public function testHasValidName($fileName, $isValid)
     {
-        $this->assertSame('file.txt', File::rtrimFileName('file.txt\ '));
-        $this->assertSame('file.txt', File::rtrimFileName('file.txt.'));
-        $this->assertSame('file.txt', File::rtrimFileName("file.txt.\xFF"));
-        $this->assertSame('file.txt', File::rtrimFileName("file.txt.\x7F\\"));
-        $this->assertSame('file.txt', File::rtrimFileName('file.txt    '));
-        $this->assertSame('file.txt', File::rtrimFileName("file.txt.\x00\x0B"));
-        $this->assertSame('file.txt', File::rtrimFileName("file.txt\ \x1F"));
-        $this->assertSame('file.txt', File::rtrimFileName('file.txt' . DIRECTORY_SEPARATOR));
-        
+        $file = new File($fileName);
+        $this->assertSame($isValid, $file->hasValidName());
+    }
+
+    public function fileNameToRTrimProvider()
+    {
+        return [
+            ['file.txt\ '],
+            ['file.txt.'],
+            ["file.txt.\xFF"],
+            ["file.txt.\x7F\\"],
+            ['file.txt    '],
+            ["file.txt.\x00\x0B"],
+            ["file.txt\ \x1F"],
+            ['file.txt' . DIRECTORY_SEPARATOR]
+        ];
+    }
+    
+    /**
+     * @dataProvider fileNameToRTrimProvider
+     */
+    public function testRtrimFileName($fileName)
+    {
+        $this->assertSame('file.txt', File::rtrimFileName($fileName));
+    }
+    
+    public function testRtrimFileNameASCII()
+    {
         for ($i = 0; $i < 32; $i++) {
             $this->assertSame('file.txt', File::rtrimFileName('file.txt' . chr($i)));
         }
     }
     
+    public function longFileNameProvider()
+    {
+        return [
+            'too long name' => [str_repeat('a', File::MAX_FILENAME_LENGTH) . 'a', false],
+            'max length name' => [substr(str_repeat('žščťď', 51), 0, File::MAX_FILENAME_LENGTH), true]
+        ];
+    }
+    
+    /**
+     * @dataProvider longFileNameProvider
+     */
+    public function testIsValidFileNameFilenameLength($fileName, $isValid)
+    {
+        $this->assertSame($isValid, File::isValidFileName($fileName));
+    }
+    
     public function testIsValidFileName()
     {
-        //File name length test
-        $longFileName = str_repeat('a', File::MAX_FILENAME_LENGTH) . 'a';
-        $maxLengthFileName = substr(str_repeat('žščťď', 51), 0, File::MAX_FILENAME_LENGTH);
-        
-        $this->assertFalse(File::isValidFileName($longFileName));
-        $this->assertTrue(File::isValidFileName($maxLengthFileName));
-        
         // Reserved file names test
         foreach (self::RESERVED_FILENAMES as $fileName) {
             $this->assertFalse(File::isValidFileName($fileName));
