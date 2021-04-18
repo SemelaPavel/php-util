@@ -8,8 +8,10 @@
  * file that was distributed with this source code.
  */
 
-use SemelaPavel\Pagination\Paginator;
-use PHPUnit\Framework\TestCase;
+namespace SemelaPavel\UnitTests\Pagination;
+
+use \SemelaPavel\Pagination\Paginator;
+use \PHPUnit\Framework\TestCase;
 
 /**
  * @author Pavel Semela <semela_pavel@centrum.cz>
@@ -18,7 +20,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class PaginatorTest extends TestCase
 {
-    protected $paginators = [];
+    protected array $paginators = [];
     
     protected function setUp(): void
     {
@@ -38,7 +40,7 @@ final class PaginatorTest extends TestCase
     /**
      * [$this->paginators index, numOfItems]
      */
-    public function numOfItemsPovider()
+    public function numOfItemsPovider(): array
     {
         return [[0, 0], [1, 0], [2, 0], [3, 1], [4, 1], [5, 100], [6, 0], [7, 100]];
     }
@@ -46,7 +48,7 @@ final class PaginatorTest extends TestCase
     /**
      * [$this->paginators index, itemsPerPage]
      */
-    public function itemsPerPagePovider()
+    public function itemsPerPagePovider(): array
     {
         return [[0, 1], [1, 1], [2, 1], [3, 1], [4, 2], [5, 15], [6, 10], [7, 15]];
     }
@@ -54,7 +56,7 @@ final class PaginatorTest extends TestCase
     /**
      * [$this->paginators index, currentPage]
      */
-    public function currentPagePovider()
+    public function currentPagePovider(): array
     {
         return [[0, 1], [1, 1], [2, 1], [3, 1], [4, 1], [5, 7], [6, 1], [7, 6]];
     }
@@ -62,7 +64,7 @@ final class PaginatorTest extends TestCase
     /**
      * [$this->paginators index, numOfPages]
      */
-    public function numOfPagesPovider()
+    public function numOfPagesPovider(): array
     {
         return [[0, 1], [1, 1], [2, 1], [3, 1], [4, 1], [5, 7], [6, 1], [7, 7]];
     }
@@ -70,7 +72,7 @@ final class PaginatorTest extends TestCase
     /**
      * [$this->paginators index, currentPageLength]
      */
-    public function currentPageLengthProvider()
+    public function currentPageLengthProvider(): array
     {
         return [[0, 0], [1, 0], [2, 0], [3, 1], [4, 1], [5, 10], [6, 0], [7, 15]];
     }
@@ -78,7 +80,7 @@ final class PaginatorTest extends TestCase
     /**
      * [$this->paginators index, offset]
      */
-    public function offsetProvider()
+    public function offsetProvider(): array
     {
         return [[0, 0], [1, 0], [2, 0], [3, 0], [4, 0], [5, 90], [6, 0], [7, 75]];
     }
@@ -86,7 +88,7 @@ final class PaginatorTest extends TestCase
     /**
      * [$this->paginators index, firstPage]
      */
-    public function firstPageProvider()
+    public function firstPageProvider(): array
     {
         return [[0, 1], [1, 1], [2, 1], [3, 1], [4, 1], [5, 1], [6, 1], [7, 1]];
     }
@@ -94,7 +96,7 @@ final class PaginatorTest extends TestCase
     /**
      * [$this->paginators index, lastPage]
      */
-    public function lastPageProvider()
+    public function lastPageProvider(): array
     {
         return [[0, 1], [1, 1], [2, 1], [3, 1], [4, 1], [5, 7], [6, 1], [7, 7]];
     }
@@ -102,7 +104,7 @@ final class PaginatorTest extends TestCase
     /**
      * [$this->paginators index, isFirstPage result]
      */
-    public function isFirstPageProvider()
+    public function isFirstPageProvider(): array
     {
         return [
             [0, true], [1, true], [2, true], [3, true], [4, true], [5, false], [6, true], [7, false]
@@ -112,7 +114,7 @@ final class PaginatorTest extends TestCase
     /**
      * [$this->paginators index, isLastPage result]
      */
-    public function isLastPageProvider()
+    public function isLastPageProvider(): array
     {
         return [
             [0, true], [1, true], [2, true], [3, true], [4, true], [5, true], [6, true], [7, false]
@@ -122,7 +124,7 @@ final class PaginatorTest extends TestCase
     /**
      * [$this->paginators index, nextPage result]
      */
-    public function nextPageProvider()
+    public function nextPageProvider(): array
     {
         return [
             [0, null], [1, null], [2, null], [3, null], [4, null], [5, null], [6, null], [7, 7]
@@ -132,7 +134,7 @@ final class PaginatorTest extends TestCase
     /**
      * [$this->paginators index, prevPage result]
      */
-    public function prevPageProvider()
+    public function prevPageProvider(): array
     {
         return [
             [0, null], [1, null], [2, null], [3, null], [4, null], [5, 6], [6, null], [7, 5]
@@ -149,7 +151,7 @@ final class PaginatorTest extends TestCase
      *     getCurrentPageLength()
      * ]
      */
-    public function setNumOfItemsProvider()
+    public function setNumOfItemsProvider(): array
     {
         return [
             [0,   10, 10, 1, 10,  1],
@@ -173,7 +175,7 @@ final class PaginatorTest extends TestCase
      *     getCurrentPageLength()
      * ]
      */
-    public function setItemsPerPageProvider()
+    public function setItemsPerPageProvider(): array
     {
         return [
             [0,   10, 10, 1,   1,  0],
@@ -194,7 +196,7 @@ final class PaginatorTest extends TestCase
      *     getCurrentPage()
      * ]
      */
-    public function setCurrentPageProvider()
+    public function setCurrentPageProvider(): array
     {
         return [
             [0, 10, 1],
@@ -211,7 +213,7 @@ final class PaginatorTest extends TestCase
     /**
      * @dataProvider numOfItemsPovider
      */
-    public function testGetNumOfItems($i, $numOfItems)
+    public function testGetNumOfItems(int $i, int $numOfItems): void
     {
         $this->assertSame($numOfItems, $this->paginators[$i]->getNumOfItems());
     }
@@ -219,7 +221,7 @@ final class PaginatorTest extends TestCase
     /**
      * @dataProvider itemsPerPagePovider
      */
-    public function testGetItemsPerPage($i, $itemsPerPage)
+    public function testGetItemsPerPage(int $i, int $itemsPerPage): void
     {
         $this->assertSame($itemsPerPage, $this->paginators[$i]->getItemsPerPage());
     }
@@ -227,7 +229,7 @@ final class PaginatorTest extends TestCase
     /**
      * @dataProvider currentPagePovider
      */
-    public function testGetCurrentPage($i, $currentPage)
+    public function testGetCurrentPage(int $i, int $currentPage): void
     {
         $this->assertSame($currentPage, $this->paginators[$i]->getCurrentPage());
     }
@@ -235,7 +237,7 @@ final class PaginatorTest extends TestCase
     /**
      * @dataProvider numOfPagesPovider
      */
-    public function testGetNumOfPages($i, $numOfPages)
+    public function testGetNumOfPages(int $i, int $numOfPages): void
     {
         $this->assertSame($numOfPages, $this->paginators[$i]->getNumOfPages());
     }
@@ -243,7 +245,7 @@ final class PaginatorTest extends TestCase
     /**
      * @dataProvider currentPageLengthProvider
      */
-    public function testGetCurrentPageLength($i, $pageLength)
+    public function testGetCurrentPageLength(int $i, int $pageLength): void
     {
         $this->assertSame($pageLength, $this->paginators[$i]->getCurrentPageLength());
     }
@@ -251,7 +253,7 @@ final class PaginatorTest extends TestCase
     /**
      * @dataProvider offsetProvider
      */
-    public function testGetOffset($i, $offset)
+    public function testGetOffset(int $i, int $offset): void
     {
         $this->assertSame($offset, $this->paginators[$i]->getOffset());
     }
@@ -259,7 +261,7 @@ final class PaginatorTest extends TestCase
     /**
      * @dataProvider firstPageProvider
      */
-    public function testGetFirstPage($i, $firstPage)
+    public function testGetFirstPage(int $i, int $firstPage): void
     {
         $this->assertSame($firstPage, $this->paginators[$i]->getFirstPage());
     }
@@ -267,7 +269,7 @@ final class PaginatorTest extends TestCase
     /**
      * @dataProvider lastPageProvider
      */
-    public function testGetLastPage($i, $lastPage)
+    public function testGetLastPage(int $i, int $lastPage): void
     {
         $this->assertSame($lastPage, $this->paginators[$i]->getLastPage());
     }
@@ -275,7 +277,7 @@ final class PaginatorTest extends TestCase
     /**
      * @dataProvider isFirstPageProvider
      */
-    public function testIsFirst($i, $isFirstPage)
+    public function testIsFirst(int $i, bool $isFirstPage): void
     {
         $this->assertSame($isFirstPage, $this->paginators[$i]->isFirst());
     }
@@ -283,7 +285,7 @@ final class PaginatorTest extends TestCase
     /**
      * @dataProvider isLastPageProvider
      */
-    public function testIsLast($i, $isLastPage)
+    public function testIsLast(int $i, bool $isLastPage): void
     {
         $this->assertSame($isLastPage, $this->paginators[$i]->isLast());
     }
@@ -291,7 +293,7 @@ final class PaginatorTest extends TestCase
     /**
      * @dataProvider nextPageProvider
      */
-    public function testGetNextPage($i, $nextPage)
+    public function testGetNextPage(int $i, ?int $nextPage): void
     {
         $this->assertSame($nextPage, $this->paginators[$i]->getNextPage());
     }
@@ -299,7 +301,7 @@ final class PaginatorTest extends TestCase
     /**
      * @dataProvider prevPageProvider
      */
-    public function testGetPrevPage($i, $prevPage)
+    public function testGetPrevPage(int $i, ?int $prevPage): void
     {
         $this->assertSame($prevPage, $this->paginators[$i]->getPrevPage());
     }
@@ -307,11 +309,16 @@ final class PaginatorTest extends TestCase
     /**
      * @dataProvider setNumOfItemsProvider
      */
-    public function testSetNumOfItems($i, $numOfItemsSet, $numberOfItemsGet, $currentPage, $numOfPages, $currentPageLength)
+    public function testSetNumOfItems(
+        int $i,
+        ?int $numOfItemsSet,
+        int $numberOfItemsGet,
+        int $currentPage,
+        int $numOfPages,
+        int $currentPageLength): void
     {
-        $paginator = $this->paginators[$i];
-        $paginator->setNumOfItems($numOfItemsSet);
-        
+        $paginator = $this->paginators[$i]->setNumOfItems($numOfItemsSet);
+
         $this->assertSame($numberOfItemsGet, $paginator->getNumOfItems());
         $this->assertSame($currentPage, $paginator->getCurrentPage());
         $this->assertSame($numOfPages, $paginator->getNumOfPages());
@@ -321,11 +328,16 @@ final class PaginatorTest extends TestCase
     /**
      * @dataProvider setItemsPerPageProvider
      */
-    public function testSetItemsPerPage($i, $itemsPerPageSet, $itemsPerPageGet, $currentPage, $numOfPages, $currentPageLength)
+    public function testSetItemsPerPage(
+        int $i,
+        int $itemsPerPageSet,
+        int $itemsPerPageGet,
+        int $currentPage,
+        int $numOfPages,
+        int $currentPageLength): void
     {
-        $paginator = $this->paginators[$i];
-        $paginator->setItemsPerPage($itemsPerPageSet);
-        
+        $paginator = $this->paginators[$i]->setItemsPerPage($itemsPerPageSet);
+
         $this->assertSame($itemsPerPageGet, $paginator->getItemsPerPage());
         $this->assertSame($currentPage, $paginator->getCurrentPage());
         $this->assertSame($numOfPages, $paginator->getNumOfPages());
@@ -335,11 +347,10 @@ final class PaginatorTest extends TestCase
     /**
      * @dataProvider setCurrentPageProvider
      */
-    public function testSetCurrentPage($i, $currentPageSet, $currentPageGet)
+    public function testSetCurrentPage(int $i, int $currentPageSet, int $currentPageGet): void
     {
-        $paginator = $this->paginators[$i];
-        $paginator->setCurrentPage($currentPageSet);
-        
+        $paginator = $this->paginators[$i]->setCurrentPage($currentPageSet);
+
         $this->assertSame($currentPageGet, $paginator->getCurrentPage());
     }
 }

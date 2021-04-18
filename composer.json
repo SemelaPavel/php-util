@@ -23,6 +23,17 @@
     },
     "require-dev": {
         "phpunit/phpunit": "^9.1",
-        "mikey179/vfsstream": "^1.6"
+        "mikey179/vfsstream": "^1.6",
+        "phpstan/phpstan": "^0.12.82"
+    },
+    "autoload": {
+        "psr-4": {
+            "SemelaPavel\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": { 
+            "SemelaPavel\\UnitTests\\": "tests/unit/"
+        }
     }
 }

@@ -1,0 +1,18 @@
+parameters:
+    level: 8
+
+    paths:
+        - src/
+        - tests/unit/
+
+    ignoreErrors:
+        -   
+            message: '#Call to an undefined method DateTimeInterface::.*#'
+            path: src/Time/Calendar.php
+        -   
+            message: '#.*trim expects string, string\|null given#'
+            path: src/Time/LocalDateTime.php
+        -   
+            message: '#.*no value type specified in iterable type array.*#'
+            paths:
+                - tests/unit/*

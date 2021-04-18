@@ -22,5 +22,18 @@ use SemelaPavel\Http\Exception\FileUploadException;
  */
 class FormFileSizeException extends FileUploadException
 {
-    protected $message = 'The uploaded file exceeds the MAX_FILE_SIZE directive in HTML form.';
+    /**
+     * Construct the exception.
+     * 
+     * @param string $message The Exception message to throw.
+     * @param int $code The Exception code.
+     * @param \Throwable $previous The previous exception used for the exception chaining.
+     */
+    public function __construct(
+        string $message = 'The uploaded file exceeds the MAX_FILE_SIZE directive in HTML form.',
+        int $code = 0,
+        \Throwable $previous = null
+    ) {
+        parent::__construct($message, $code, $previous);
+    }
 }

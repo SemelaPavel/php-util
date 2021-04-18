@@ -8,9 +8,11 @@
  * file that was distributed with this source code.
  */
 
-use PHPUnit\Framework\TestCase;
-use SemelaPavel\Http\FileUpload;
-use SemelaPavel\Http\UploadedFile;
+namespace SemelaPavel\UnitTests\Http;
+
+use \PHPUnit\Framework\TestCase;
+use \SemelaPavel\Http\FileUpload;
+use \SemelaPavel\Http\UploadedFile;
 
 /**
  * @author Pavel Semela <semela_pavel@centrum.cz>
@@ -100,14 +102,14 @@ final class FileUploadTest extends TestCase
         $_SERVER['CONTENT_LENGTH'] = 0;
     }
 
-    public function testGetUploadedFilesLengthException()
+    public function testGetUploadedFilesLengthException(): void
     {
         $this->expectException(\LengthException::class);
         $_SERVER['CONTENT_LENGTH'] = FileUpload::maxPostSize() + 1;
         (new FileUpload())->getUploadedFiles();
     }
     
-    public function testGetUploadedFiles()
+    public function testGetUploadedFiles(): void
     {
         $file0 = null;
         $file1 = new UploadedFile('E:\wampserver\tmp\php56C1.tmp', 'kitten.jpg.php', 17690, 0);

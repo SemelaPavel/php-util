@@ -1,4 +1,5 @@
 /nbproject/
+/public/upload/
+/tests/.cache/
 /vendor/
 composer.lock
-/public/upload/

@@ -8,8 +8,10 @@
  * file that was distributed with this source code.
  */
 
-use SemelaPavel\Pagination\Pagination;
-use PHPUnit\Framework\TestCase;
+namespace SemelaPavel\UnitTests\Pagination;
+
+use \SemelaPavel\Pagination\Pagination;
+use \PHPUnit\Framework\TestCase;
 
 /**
  * @author Pavel Semela <semela_pavel@centrum.cz>
@@ -20,8 +22,12 @@ final class PaginationTest extends TestCase
 {
     /**
      * Helper method.
+     * 
+     * @param array<int, int|null> $pagesNumbers
+     * 
+     * @return array<int, array{'page': int|null, 'isCurrent': bool}>
      */
-    protected function pArray($pagesNumbers, $currentPage)
+    protected function pArray(array $pagesNumbers, int $currentPage): array
     {
         $pagination = [];
         
@@ -41,7 +47,7 @@ final class PaginationTest extends TestCase
      * 
      * @doesNotPerformAssertions
      */
-    public function testConstruct()
+    public function testConstruct(): array
     {
         return [
             0 => new Pagination(100, 5, 1),
@@ -62,23 +68,23 @@ final class PaginationTest extends TestCase
      *     current page 
      * ]
      */
-    public function paginationArrayEg1Provider()
+    public function paginationArrayEg1Provider(): array
     {
         return [
-            'EG1:O1/I2' => [0, 1, 2, null, [1, 2, 3, 4, 5, null, 20], 1],
-            'EG1:O1/I2' => [0, 1, 2, null, [1, 2, 3, 4, 5, null, 20], 2],
-            'EG1:O1/I2' => [0, 1, 2, null, [1, 2, 3, 4, 5, null, 20], 3],
-            'EG1:O1/I2' => [0, 1, 2, null, [1, 2, 3, 4, 5, 6, null, 20], 4],
-            'EG1:O1/I2' => [0, 1, 2, null, [1, null, 3, 4, 5, 6, 7, null, 20], 5],
-            'EG1:O1/I2' => [0, 1, 2, null, [1, null, 14, 15, 16, 17, 18, null, 20], 16],
-            'EG1:O1/I2' => [0, 1, 2, null, [1, null, 15, 16, 17, 18, 19, 20], 17],
-            'EG1:O1/I2' => [0, 1, 2, null, [1, null, 16, 17, 18, 19, 20], 18],
-            'EG1:O1/I2' => [0, 1, 2, null, [1, null, 16, 17, 18, 19, 20], 19],
-            'EG1:O1/I2' => [0, 1, 2, null, [1, null, 16, 17, 18, 19, 20], 20],
-            'EG1:O1/I2' => [1, 1, 2, null, [1], 1],
-            'EG1:O1/I2' => [2, 1, 2, null, [1, 2], 2],
-            'EG1:O1/I2' => [3, 1, 2, null, [1, 2, 3], 2],
-            'EG1:O1/I2' => [3, 1, 2, null, [1, 2, 3], 3]
+            [0, 1, 2, [1, 2, 3, 4, 5, null, 20], 1],
+            [0, 1, 2, [1, 2, 3, 4, 5, null, 20], 2],
+            [0, 1, 2, [1, 2, 3, 4, 5, null, 20], 3],
+            [0, 1, 2, [1, 2, 3, 4, 5, 6, null, 20], 4],
+            [0, 1, 2, [1, null, 3, 4, 5, 6, 7, null, 20], 5],
+            [0, 1, 2, [1, null, 14, 15, 16, 17, 18, null, 20], 16],
+            [0, 1, 2, [1, null, 15, 16, 17, 18, 19, 20], 17],
+            [0, 1, 2, [1, null, 16, 17, 18, 19, 20], 18],
+            [0, 1, 2, [1, null, 16, 17, 18, 19, 20], 19],
+            [0, 1, 2, [1, null, 16, 17, 18, 19, 20], 20],
+            [1, 1, 2, [1], 1],
+            [2, 1, 2, [1, 2], 2],
+            [3, 1, 2, [1, 2, 3], 2],
+            [3, 1, 2, [1, 2, 3], 3]
         ];
     }
     
@@ -93,25 +99,25 @@ final class PaginationTest extends TestCase
      *     current page 
      * ]
      */
-    public function paginationArrayEg2Provider()
+    public function paginationArrayEg2Provider(): array
     {
         return [
-            'EG2:O2/I2' => [0, 2, 2, null, [1, 2, 3, 4, 5, null, 19, 20], 1],
-            'EG2:O2/I2' => [0, 2, 2, null, [1, 2, 3, 4, 5, null, 19, 20], 2],
-            'EG2:O2/I2' => [0, 2, 2, null, [1, 2, 3, 4, 5, null, 19, 20], 3],
-            'EG2:O2/I2' => [0, 2, 2, null, [1, 2, 3, 4, 5, 6, null, 19, 20], 4],
-            'EG2:O2/I2' => [0, 2, 2, null, [1, 2, 3, 4, 5, 6, 7, null, 19, 20], 5],
-            'EG2:O2/I2' => [0, 2, 2, null, [1, 2, null, 4, 5, 6, 7, 8, null, 19, 20], 6],
-            'EG2:O2/I2' => [0, 2, 2, null, [1, 2, null, 13, 14, 15, 16, 17, null, 19, 20], 15],
-            'EG2:O2/I2' => [0, 2, 2, null, [1, 2, null, 14, 15, 16, 17, 18, 19, 20], 16],
-            'EG2:O2/I2' => [0, 2, 2, null, [1, 2, null, 15, 16, 17, 18, 19, 20], 17],
-            'EG2:O2/I2' => [0, 2, 2, null, [1, 2, null, 16, 17, 18, 19, 20], 18],
-            'EG2:O2/I2' => [0, 2, 2, null, [1, 2, null, 16, 17, 18, 19, 20], 19],
-            'EG2:O2/I2' => [0, 2, 2, null, [1, 2, null, 16, 17, 18, 19, 20], 20],
-            'EG2:O2/I2' => [1, 2, 2, null, [1], 1],
-            'EG2:O2/I2' => [2, 2, 2, null, [1, 2], 2],
-            'EG2:O2/I2' => [3, 2, 2, null, [1, 2, 3], 2],
-            'EG2:O2/I2' => [3, 2, 2, null, [1, 2, 3], 3]
+            [0, 2, 2, [1, 2, 3, 4, 5, null, 19, 20], 1],
+            [0, 2, 2, [1, 2, 3, 4, 5, null, 19, 20], 2],
+            [0, 2, 2, [1, 2, 3, 4, 5, null, 19, 20], 3],
+            [0, 2, 2, [1, 2, 3, 4, 5, 6, null, 19, 20], 4],
+            [0, 2, 2, [1, 2, 3, 4, 5, 6, 7, null, 19, 20], 5],
+            [0, 2, 2, [1, 2, null, 4, 5, 6, 7, 8, null, 19, 20], 6],
+            [0, 2, 2, [1, 2, null, 13, 14, 15, 16, 17, null, 19, 20], 15],
+            [0, 2, 2, [1, 2, null, 14, 15, 16, 17, 18, 19, 20], 16],
+            [0, 2, 2, [1, 2, null, 15, 16, 17, 18, 19, 20], 17],
+            [0, 2, 2, [1, 2, null, 16, 17, 18, 19, 20], 18],
+            [0, 2, 2, [1, 2, null, 16, 17, 18, 19, 20], 19],
+            [0, 2, 2, [1, 2, null, 16, 17, 18, 19, 20], 20],
+            [1, 2, 2, [1], 1],
+            [2, 2, 2, [1, 2], 2],
+            [3, 2, 2, [1, 2, 3], 2],
+            [3, 2, 2, [1, 2, 3], 3]
         ];
     
     }
@@ -127,23 +133,23 @@ final class PaginationTest extends TestCase
      *     current page 
      * ]
      */
-    public function paginationArrayEg3Provider()
+    public function paginationArrayEg3Provider(): array
     {
         return [
-            'EG3:O0/I2' => [0, 0, 2, null, [1, 2, 3, 4, 5], 1, 1],
-            'EG3:O0/I2' => [0, 0, 2, null, [1, 2, 3, 4, 5], 2],
-            'EG3:O0/I2' => [0, 0, 2, null, [1, 2, 3, 4, 5], 3],
-            'EG3:O0/I2' => [0, 0, 2, null, [2, 3, 4, 5, 6], 4],
-            'EG3:O0/I2' => [0, 0, 2, null, [3, 4, 5, 6, 7], 5],
-            'EG3:O0/I2' => [0, 0, 2, null, [14, 15, 16, 17, 18], 16],
-            'EG3:O0/I2' => [0, 0, 2, null, [15, 16, 17, 18, 19], 17],
-            'EG3:O0/I2' => [0, 0, 2, null, [16, 17, 18, 19, 20], 18],
-            'EG3:O0/I2' => [0, 0, 2, null, [16, 17, 18, 19, 20], 19],
-            'EG3:O0/I2' => [0, 0, 2, null, [16, 17, 18, 19, 20], 20],
-            'EG3:O0/I2' => [1, 0, 2, null, [1], 1],
-            'EG3:O0/I2' => [2, 0, 2, null, [1, 2], 2],
-            'EG3:O0/I2' => [3, 0, 2, null, [1, 2, 3], 2],
-            'EG3:O0/I2' => [3, 0, 2, null, [1, 2, 3], 3]
+            [0, 0, 2, [1, 2, 3, 4, 5], 1],
+            [0, 0, 2, [1, 2, 3, 4, 5], 2],
+            [0, 0, 2, [1, 2, 3, 4, 5], 3],
+            [0, 0, 2, [2, 3, 4, 5, 6], 4],
+            [0, 0, 2, [3, 4, 5, 6, 7], 5],
+            [0, 0, 2, [14, 15, 16, 17, 18], 16],
+            [0, 0, 2, [15, 16, 17, 18, 19], 17],
+            [0, 0, 2, [16, 17, 18, 19, 20], 18],
+            [0, 0, 2, [16, 17, 18, 19, 20], 19],
+            [0, 0, 2, [16, 17, 18, 19, 20], 20],
+            [1, 0, 2, [1], 1],
+            [2, 0, 2, [1, 2], 2],
+            [3, 0, 2, [1, 2, 3], 2],
+            [3, 0, 2, [1, 2, 3], 3]
         ];
     
     }
@@ -159,19 +165,19 @@ final class PaginationTest extends TestCase
      *     current page 
      * ]
      */
-    public function paginationArrayEg4Provider()
+    public function paginationArrayEg4Provider(): array
     {
         return [
-            'EG4:O1/I0' => [0, 1, 0, null, [1, null, 20], 1],
-            'EG4:O1/I0' => [0, 1, 0, null, [1, 2, null, 20], 2],
-            'EG4:O1/I0' => [0, 1, 0, null, [1, null, 3, null, 20], 3],
-            'EG4:O1/I0' => [0, 1, 0, null, [1, null, 18, null, 20], 18],
-            'EG4:O1/I0' => [0, 1, 0, null, [1, null, 19, 20], 19],
-            'EG4:O1/I0' => [0, 1, 0, null, [1, null, 20], 20],
-            'EG4:O1/I0' => [1, 1, 0, null, [1], 1],
-            'EG4:O1/I0' => [2, 1, 0, null, [1, 2], 2],
-            'EG4:O1/I0' => [3, 1, 0, null, [1, 2, 3], 2],
-            'EG4:O1/I0' => [3, 1, 0, null, [1, null, 3], 3]
+            [0, 1, 0, [1, null, 20], 1],
+            [0, 1, 0, [1, 2, null, 20], 2],
+            [0, 1, 0, [1, null, 3, null, 20], 3],
+            [0, 1, 0, [1, null, 18, null, 20], 18],
+            [0, 1, 0, [1, null, 19, 20], 19],
+            [0, 1, 0, [1, null, 20], 20],
+            [1, 1, 0, [1], 1],
+            [2, 1, 0, [1, 2], 2],
+            [3, 1, 0, [1, 2, 3], 2],
+            [3, 1, 0, [1, null, 3], 3]
         ];
     
     }
@@ -187,19 +193,19 @@ final class PaginationTest extends TestCase
      *     current page 
      * ]
      */
-    public function paginationArrayEg5Provider()
+    public function paginationArrayEg5Provider(): array
     {
         return [
-            'EG5:O0/I0' => [0, 0, 0, null, [1], 1],
-            'EG5:O0/I0' => [0, 0, 0, null, [2], 2],
-            'EG5:O0/I0' => [0, 0, 0, null, [3], 3],
-            'EG5:O0/I0' => [0, 0, 0, null, [18], 18],
-            'EG5:O0/I0' => [0, 0, 0, null, [19], 19],
-            'EG5:O0/I0' => [0, 0, 0, null, [20], 20],
-            'EG5:O0/I0' => [1, 0, 0, null, [1], 1],
-            'EG5:O0/I0' => [2, 0, 0, null, [2], 2],
-            'EG5:O0/I0' => [3, 0, 0, null, [2], 2],
-            'EG5:O0/I0' => [3, 0, 0, null, [3], 3]
+            [0, 0, 0, [1], 1],
+            [0, 0, 0, [2], 2],
+            [0, 0, 0, [3], 3],
+            [0, 0, 0, [18], 18],
+            [0, 0, 0, [19], 19],
+            [0, 0, 0, [20], 20],
+            [1, 0, 0, [1], 1],
+            [2, 0, 0, [2], 2],
+            [3, 0, 0, [2], 2],
+            [3, 0, 0, [3], 3]
         ];
     
     }
@@ -211,12 +217,20 @@ final class PaginationTest extends TestCase
      * @dataProvider paginationArrayEg4Provider
      * @dataProvider paginationArrayEg5Provider
      * @depends testConstruct
+     * 
+     * @param array<int, Pagination> $paginations
      */
-    public function testToArray($i, $outerRange, $innerRange, $gap, $pages, $currentPage, $paginations)
+    public function testToArray(
+        int $i,
+        int $outerRange,
+        int $innerRange,
+        array $pages,
+        int $currentPage,
+        array $paginations): void
     {
         $pages = $this->pArray($pages, $currentPage);
         $paginations[$i]->setCurrentPage($currentPage);
         
-        $this->assertSame($pages, $paginations[$i]->toArray($outerRange, $innerRange, $gap));
+        $this->assertSame($pages, $paginations[$i]->toArray($outerRange, $innerRange));
     }
 }

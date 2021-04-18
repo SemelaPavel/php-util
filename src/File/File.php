@@ -67,7 +67,7 @@ class File extends \SplFileInfo
         
         $warning = 'no error details are available';
         
-        set_error_handler(function ($errno, $errstr) use (&$warning) { $warning = $errstr; });
+        set_error_handler(function ($errno, $errstr) use (&$warning) { $warning = $errstr; return true;});
         $content = \file_get_contents($this->getPathname());
         restore_error_handler();
         
@@ -96,7 +96,13 @@ class File extends \SplFileInfo
      */
     public function getMimeType(): ?string
     {
-        return $this->isReadable() ? \mime_content_type($this->getPathname()) : null;
+        $mime = @\mime_content_type($this->getPathname());
+        if ($mime) {
+                
+            return $mime;
+        }
+        
+        return null;
     }
    
     /**

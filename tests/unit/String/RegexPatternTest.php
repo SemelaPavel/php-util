@@ -8,9 +8,11 @@
  * file that was distributed with this source code.
  */
 
-use PHPUnit\Framework\TestCase;
-use SemelaPavel\String\RegexPattern;
-use SemelaPavel\String\Exception\RegexException;
+namespace SemelaPavel\UnitTests\String;
+
+use \PHPUnit\Framework\TestCase;
+use \SemelaPavel\String\RegexPattern;
+use \SemelaPavel\String\Exception\RegexException;
 
 /**
  * @author Pavel Semela <semela_pavel@centrum.cz>
@@ -26,7 +28,7 @@ final class RegexPatternTest extends TestCase
      * 
      * @doesNotPerformAssertions
      */
-    public function testFromGlobs()
+    public function testFromGlobs(): array
     {
         $globs = ['[.-0a-z].jpg', '[!0-9]???.PNG', '*.gif', '**.txt', 'file.[txc]??'];
 
@@ -41,7 +43,7 @@ final class RegexPatternTest extends TestCase
      * Data provider for testFromGlobsMatch().
      * [index of RegexPattern object from testFromGlobs(), subject to match, result]
      */
-    public function globsMatchProvider()
+    public function globsMatchProvider(): array
     {
         return [
             [0, 'a.JPG', true],
@@ -83,7 +85,7 @@ final class RegexPatternTest extends TestCase
      * 
      * @doesNotPerformAssertions
      */
-    public function testFromGlob()
+    public function testFromGlob(): array
     {
         $glob = '/home/**[P][!a-t]*/*[.-9]*?.???';
 
@@ -98,7 +100,7 @@ final class RegexPatternTest extends TestCase
      * Data provider for testFromGlobMatch().
      * [index of RegexPattern object from testFromGlobs(), subject to match, result]
      */
-    public function globMatchProvider()
+    public function globMatchProvider(): array
     {
         return [
             [0, '/home/Pu/1a.t\\t', true],
@@ -120,7 +122,7 @@ final class RegexPatternTest extends TestCase
      * @dataProvider globMatchProvider
      * @depends testFromGlob
      */
-    public function testFromGlobMatch($i, $subject, $matchResult, $regexes)
+    public function testFromGlobMatch(int $i, string $subject, bool $matchResult, array $regexes): void
     {
         $this->assertSame($matchResult, $regexes[$i][0]->match($subject));
     }
@@ -129,12 +131,12 @@ final class RegexPatternTest extends TestCase
      * @dataProvider globsMatchProvider
      * @depends testFromGlobs
      */
-    public function testFromGlobsMatch($i, $subject, $matchResult, $regexes)
+    public function testFromGlobsMatch(int $i, string $subject, bool $matchResult, array $regexes): void
     {
         $this->assertSame($matchResult, $regexes[$i][0]->match($subject));
     }
 
-    public function testQuote()
+    public function testQuote(): void
     {
         $toQuote = '.+*?[^]$(){}=!<>|:-#\\' . '~';
         $quoted = '\.\+\*\?\[\^\]\$\(\)\{\}\=\!\<\>\|\:\-\#\\\\';
@@ -149,7 +151,7 @@ final class RegexPatternTest extends TestCase
      * 
      * @doesNotPerformAssertions
      */
-    public function testConstructProvider()
+    public function testConstructProvider(): array
     {
         return [
             0 => [new RegexPattern('^[a-z]\:\\\\DIR~1\\\\file\.txt$')],
@@ -183,7 +185,7 @@ final class RegexPatternTest extends TestCase
      * Data provider for testGetRegex().
      * [row name, index of RegexPattern object from testConstructProvider(), result]
      */
-    public function getRegexProvider()
+    public function getRegexProvider(): array
     {
         return [
             'Basic regex pattern' => [0, '^[a-z]\:\\\\DIR~1\\\\file\.txt$'],
@@ -202,7 +204,7 @@ final class RegexPatternTest extends TestCase
      * Data provider for testGetRegex().
      * [row name, index of RegexPattern object from testConstructProvider(), result]
      */
-    public function getFlagsProvider()
+    public function getFlagsProvider(): array
     {
         return [
             'Basic regex flag' => [0, 0],
@@ -230,7 +232,7 @@ final class RegexPatternTest extends TestCase
      * Data provider for testMatch().
      * [row name, index of RegexPattern object from testConstructProvider(), result]
      */
-    public function regexPatternMatchProvider()
+    public function regexPatternMatchProvider(): array
     {
         return [
             'Basic regex match 1' => [0, 'c:\\DIR~1\\file.txt', true],
@@ -250,7 +252,7 @@ final class RegexPatternTest extends TestCase
      * Data provider for testToString().
      * [row name, index of RegexPattern object from testConstructProvider(), result]
      */
-    public function regexPatternStringProvider()
+    public function regexPatternStringProvider(): array
     {
         return [
             'Basic regex to string' => [0, '~^[a-z]\:\\\\DIR\~1\\\\file\.txt$~'],
@@ -268,7 +270,7 @@ final class RegexPatternTest extends TestCase
     /**
      * [row name, RegexPattern, subject to match, exception message regex]
      */
-    public function regexExceptionProvider()
+    public function regexExceptionProvider(): array
     {
         return [
             'Unclosed [' => [
@@ -293,7 +295,7 @@ final class RegexPatternTest extends TestCase
      * @dataProvider getRegexProvider
      * @depends testConstructProvider
      */
-    public function testGetRegex($i, $patternString, $regexes)
+    public function testGetRegex(int $i, string $patternString, array $regexes): void
     {
         $this->assertSame($patternString, $regexes[$i][0]->getRegex());
     }
@@ -302,7 +304,7 @@ final class RegexPatternTest extends TestCase
      * @dataProvider getFlagsProvider
      * @depends testConstructProvider
      */
-    public function testGetFlags($i, $flags, $regexes)
+    public function testGetFlags(int $i, int $flags, array $regexes): void
     {
         $this->assertSame($flags, $regexes[$i][0]->getFlags());
     }
@@ -310,12 +312,12 @@ final class RegexPatternTest extends TestCase
     /**
      * @dataProvider testConstructProvider
      */
-    public function testIsValidValidPatterns($regex)
+    public function testIsValidValidPatterns(RegexPattern $regex): void
     {
         $this->assertTrue($regex->isValid());
     }
 
-    public function testIsValidInvalidPatterns()
+    public function testIsValidInvalidPatterns(): void
     {
         $this->assertFalse((new RegexPattern('['))->isValid());
         $this->assertFalse((new RegexPattern("\xf8\xa1\xa1\xa1\xa1", RegexPattern::UTF8))->isValid());
@@ -325,7 +327,7 @@ final class RegexPatternTest extends TestCase
      * @dataProvider regexPatternMatchProvider
      * @depends testConstructProvider
      */
-    public function testMatch($i, $subject, $matchResult, $regexes)
+    public function testMatch(int $i, string $subject, bool $matchResult, array $regexes): void
     {
         $this->assertSame($matchResult, $regexes[$i][0]->match($subject));
     }
@@ -333,7 +335,7 @@ final class RegexPatternTest extends TestCase
     /**
      * @dataProvider regexExceptionProvider
      */
-    public function testMatchRegexException($regex, $subject, $exceptionMsgRegex)
+    public function testMatchRegexException(RegexPattern $regex, string $subject, string $exceptionMsgRegex): void
     {
         $this->expectException(RegexException::class);
         $regex->match($subject);
@@ -344,7 +346,7 @@ final class RegexPatternTest extends TestCase
      * @dataProvider regexPatternStringProvider
      * @depends testConstructProvider
      */
-    public function testToString($i, $regexString, $regexes)
+    public function testToString(int $i, string $regexString, array $regexes): void
     {
         $this->assertSame($regexString, (string) $regexes[$i][0]);
     }

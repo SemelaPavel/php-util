@@ -8,9 +8,11 @@
  * file that was distributed with this source code.
  */
 
-use PHPUnit\Framework\TestCase;
-use SemelaPavel\Time\Calendar;
-use SemelaPavel\Time\Holidays;
+namespace SemelaPavel\UnitTests\Time;
+
+use \PHPUnit\Framework\TestCase;
+use \SemelaPavel\Time\Calendar;
+use \SemelaPavel\Time\Holidays;
 
 /**
  * @author Pavel Semela <semela_pavel@centrum.cz>
@@ -25,10 +27,13 @@ final class CalendarTest extends TestCase {
     const SATURDAY = '2020-01-04';
     const SUNDAY = '2020-09-27';
 
-    protected $easterMonday;
-    protected $goodFriday;
-    protected $saturday;
-    protected $sunday;
+    protected \DateTime $easterMonday;
+    protected \DateTime $goodFriday;
+    protected \DateTime $saturday;
+    protected \DateTime $sunday;
+    protected \DateTimeImmutable $goodFridayImmutable;
+    protected \DateTimeImmutable $saturdayImmutable;
+    protected \DateTimeImmutable $sundayImmutable;
 
     protected function setUp(): void
     {
@@ -36,7 +41,6 @@ final class CalendarTest extends TestCase {
         $this->easterMonday = new \DateTime(self::EASTER_MONDAY);
 
         $this->goodFridayImmutable = new \DateTimeImmutable(self::EASTER_MONDAY);
-        $this->easterMondayImmutable = new \DateTimeImmutable(self::GOOD_FRIDAY);
 
         // Regular Saturday
         $this->saturday = new \DateTime(self::SATURDAY);
@@ -47,7 +51,7 @@ final class CalendarTest extends TestCase {
         $this->sundayImmutable = new \DateTimeImmutable(self::SUNDAY);
     }
     
-    public function holidaysProvider()
+    public function holidaysProvider(): array
     {
         $holidays = new Holidays();
         $holidays["2020-01-01"] = "New Year";
@@ -72,7 +76,8 @@ final class CalendarTest extends TestCase {
     /**
      * @dataProvider holidaysProvider
      */
-    public function testIsDayOff($holidays) {
+    public function testIsDayOff(Holidays $holidays): void
+    {
         // Must be a regular days, because of holidays param is missing
         $this->assertFalse(Calendar::isDayOff($this->easterMonday));
         $this->assertFalse(Calendar::isDayOff($this->goodFriday));
@@ -86,7 +91,8 @@ final class CalendarTest extends TestCase {
     /**
      * @dataProvider holidaysProvider
      */
-    public function testNextWorkday($holidays) {
+    public function testNextWorkday(Holidays $holidays):void
+    {
         // Must be plus one day after Easter Monday
         $nextWorkDayImmutable = Calendar::nextWorkday($this->goodFridayImmutable, $holidays);
         $this->assertEquals(new \DateTime('2020-04-14'), $nextWorkDayImmutable);
@@ -104,7 +110,8 @@ final class CalendarTest extends TestCase {
     /**
      * @dataProvider holidaysProvider
      */
-    public function testPrevWorkday($holidays) {
+    public function testPrevWorkday(Holidays $holidays): void
+    {
         // Must be a day before Good Friday
         $prevWorkDay = Calendar::prevWorkday(new \DateTime('2020-04-14'), $holidays);
         $this->assertEquals(new \DateTime('2020-04-09'), $prevWorkDay);
@@ -120,7 +127,8 @@ final class CalendarTest extends TestCase {
         $this->assertEquals(new \DateTime(self::SUNDAY), $this->sunday);
     }
 
-    public function testLastDayOfMonth() {
+    public function testLastDayOfMonth():void
+    {
         $lastDayOfMonthImmutable = Calendar::lastDayOfMonth($this->saturdayImmutable);
         $this->assertEquals(new \DateTime('2020-01-31'), $lastDayOfMonthImmutable);
         $this->assertTrue($lastDayOfMonthImmutable instanceof \DateTimeImmutable);
@@ -133,7 +141,8 @@ final class CalendarTest extends TestCase {
         $this->assertEquals(new \DateTime(self::SATURDAY), $this->saturday);
     }
 
-    public function testLastDayOfPrevMonth() {
+    public function testLastDayOfPrevMonth():void
+    {
         $lastDayOfPrevMonthImmutable = Calendar::lastDayOfPrevMonth($this->saturdayImmutable);
         $this->assertEquals(new \DateTime('2019-12-31'), $lastDayOfPrevMonthImmutable);
         $this->assertTrue($lastDayOfPrevMonthImmutable instanceof \DateTimeImmutable);
@@ -146,10 +155,8 @@ final class CalendarTest extends TestCase {
         $this->assertEquals(new \DateTime(self::SATURDAY), $this->saturday);
     }
 
-    public function testCurrentYear() {
-        $this->assertEquals(
-                (new \DateTime())->format('Y'),
-                Calendar::currentYear()
-        );
+    public function testCurrentYear(): void
+    {
+        $this->assertEquals((new \DateTime())->format('Y'), Calendar::currentYear());
     }
 }

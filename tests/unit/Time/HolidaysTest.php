@@ -7,8 +7,11 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-use PHPUnit\Framework\TestCase;
-use SemelaPavel\Time\Holidays;
+
+namespace SemelaPavel\UnitTests\Time;
+
+use \PHPUnit\Framework\TestCase;
+use \SemelaPavel\Time\Holidays;
 
 /**
  * @author Pavel Semela <semela_pavel@centrum.cz>
@@ -26,7 +29,7 @@ final class HolidaysTest extends TestCase
     /**
      * @doesNotPerformAssertions
      */
-    public function testOffsetSet()
+    public function testOffsetSet(): Holidays
     {
         $holidays = new Holidays();
                 
@@ -41,7 +44,7 @@ final class HolidaysTest extends TestCase
         return $holidays;
     }
     
-    public function offsetsProvider()
+    public function offsetsProvider(): array
     {
         return [
             'New Years date' => [self::NEW_YEARS_DAY_DATE, true],
@@ -53,7 +56,7 @@ final class HolidaysTest extends TestCase
         ];
     }
     
-    public function falseDateTimeProvider()
+    public function falseDateTimeProvider(): array
     {
         return [
             'Date-time as null' => [null],
@@ -64,7 +67,7 @@ final class HolidaysTest extends TestCase
         ];
     }
     
-    public function testEaster()
+    public function testEaster(): void
     {
         $easter = new \DateTimeImmutable("2020-04-12");
         $this->assertEquals($easter, Holidays::easter(2020));
@@ -72,7 +75,7 @@ final class HolidaysTest extends TestCase
         $this->assertNotEquals($easter, Holidays::easter(2019));
     }
 
-    public function testGoodFriday()
+    public function testGoodFriday(): void
     {
         $goodFriday = new \DateTimeImmutable("2020-04-10");
         $this->assertEquals($goodFriday, Holidays::goodFriday(2020));
@@ -80,7 +83,7 @@ final class HolidaysTest extends TestCase
         $this->assertNotEquals($goodFriday, Holidays::goodFriday(2019));
     }
     
-    public function testEasterMonday()
+    public function testEasterMonday(): void
     {
         $easterMonday = new \DateTimeImmutable("2020-04-13");
         $this->assertEquals($easterMonday, Holidays::easterMonday(2020));
@@ -88,11 +91,31 @@ final class HolidaysTest extends TestCase
         $this->assertNotEquals($easterMonday, Holidays::easterMonday(2019));
     }
     
+    public function testEasterRangeException(): void
+    {
+        $this->expectException(\RangeException::class);
+        Holidays::easter(9999999);
+    }
+    
+    public function testGoodFridayRangeException(): void
+    {
+        $this->expectException(\RangeException::class);
+        Holidays::goodFriday(9999999);
+    }
+    
+    public function testEasterMondayRangeException(): void
+    {
+        $this->expectException(\RangeException::class);
+        Holidays::easterMonday(9999999);
+    }
+    
     /**
      * @dataProvider offsetsProvider
      * @depends testOffsetSet
+     * 
+     * @param \DateTime|string $dateTime
      */
-    public function testOffsetExists($dateTime, $offSetExists, $holidays)
+    public function testOffsetExists($dateTime, bool $offSetExists, Holidays $holidays): void
     {
         $this->assertSame($offSetExists, isset($holidays[$dateTime]));
     }
@@ -100,7 +123,7 @@ final class HolidaysTest extends TestCase
     /**
      * @depends testOffsetSet
      */
-    public function testOffsetGet($holidays)
+    public function testOffsetGet(Holidays $holidays): void
     {
         $this->assertSame(
             self::NEW_YEARS_DAY_DESCRIPTION,
@@ -115,17 +138,21 @@ final class HolidaysTest extends TestCase
     /**
      * @dataProvider falseDateTimeProvider
      * @depends testOffsetSet
+     * 
+     * @param int|string|null $dateTime
      */
-    public function testOffsetGetInvalidArgumentException($dateTime, $holidays)
+    public function testOffsetGetInvalidArgumentException($dateTime, Holidays $holidays): void
     {
         $this->expectException(\InvalidArgumentException::class);
+        
+        /** @phpstan-ignore-next-line */
         $holidays[$dateTime];
     }
     
     /**
      * @depends testOffsetSet
      */
-    public function testOffsetSetAndChangeDescription($holidays)
+    public function testOffsetSetAndChangeDescription(Holidays $holidays): void
     {
         $holidays[self::NEW_YEARS_DAY_DATE] = 'no description';
         $this->assertSame('no description', $holidays[self::NEW_YEARS_DAY_DATE]);
@@ -134,17 +161,21 @@ final class HolidaysTest extends TestCase
     /**
      * @dataProvider falseDateTimeProvider
      * @depends testOffsetSet
+     * 
+     * @param int|string|null $dateTime
      */
-    public function testOffsetSetInvalidArgumentException($dateTime, $holidays)
+    public function testOffsetSetInvalidArgumentException($dateTime, Holidays $holidays): void
     {
         $this->expectException(\InvalidArgumentException::class);
+        
+        /** @phpstan-ignore-next-line */
         $holidays[$dateTime] = '';
     }
     
     /**
      * @depends testOffsetSet
      */
-    public function testOffsetUnset($holidays)
+    public function testOffsetUnset(Holidays $holidays): void
     {
         $this->assertTrue(isset($holidays[self::NEW_YEARS_DAY_DATE]));
         unset($holidays[self::NEW_YEARS_DAY_DATE]);

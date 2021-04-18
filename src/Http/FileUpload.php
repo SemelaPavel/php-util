@@ -23,7 +23,7 @@ use SemelaPavel\Http\UploadedFile;
 class FileUpload
 {
     /**
-     * @var array All uploaded files, including empty HTML inputs.
+     * @var array<string|int, mixed> All uploaded files, including empty HTML inputs.
      */
     protected array $files = [];
     
@@ -53,10 +53,10 @@ class FileUpload
      * 
      * input name="oneFile" is returned as $files['oneFile']
      * input name="filesArray[]" is returned as $files['filesArray'][0]
-     * input name="filesArray[file1][]" is returned as $files['filesArray']['file1][0]
+     * input name="filesArray[file1][]" is returned as $files['filesArray']['file1'][0]
      * etc.
      * 
-     * @return array An array tree of UploadedFile instances or null values.
+     * @return array<string|int, mixed> An array tree of UploadedFile instances or null values.
      * 
      * @throws \LengthException If upload exceeds the post_max_size directive in php.ini.
      */
@@ -102,7 +102,7 @@ class FileUpload
         if ($iniPostLimit == 0) {
             $postLimit = new Byte(Byte::MAX_VALUE);
         } else {
-            $postLimit = Byte::fromPhpIniNotation($iniPostLimit);
+            $postLimit = Byte::fromPhpIniNotation((string) $iniPostLimit);
         }
         
         return $postLimit->getValue();
@@ -120,7 +120,7 @@ class FileUpload
      */
     public static function maxUploadFileSize(): int
     {
-        $fileSizeLimit = Byte::fromPhpIniNotation(ini_get('upload_max_filesize'));
+        $fileSizeLimit = Byte::fromPhpIniNotation((string) ini_get('upload_max_filesize'));
 
         return min(
             $fileSizeLimit->getValue(), 
@@ -132,10 +132,10 @@ class FileUpload
      * Fills the internal files array with all uploaded files from global
      * array $_FILES. The uploaded files are stored as UploadedFile instances.
      * If there is no file metadata from any HTML input, a null value is stored.
-     *    
-     * @param array $uploadedFiles Array with files metadata to normalize.
      * 
-     * @return array An array tree of UploadedFile instances or null values.
+     * @param array<string|int, mixed> $uploadedFiles Uploaded files metadata ($_FILES array) to normalize.
+     * 
+     * @return array<string|int, mixed> An array tree of UploadedFile instances or null values.
      */
     protected function processUploadedFiles(array $uploadedFiles): array
     {
@@ -166,7 +166,14 @@ class FileUpload
      * instance of UploadedFile or null if the metadata contains
      * and UPLOAD_ERR_NO_FILE error code.
      * 
-     * @param array $uploadedFile Uploaded file metadata array.
+     * array $uploadedFile[
+     *     'tmp_name' => Temporary file name.
+     *     'name'     => Client file name.
+     *     'size'     => File size in bytes.
+     *     'error'    => File upload error code.
+     * ]
+     * 
+     * @param array<string, string|int> $uploadedFile Uploaded file metadata array.
      * 
      * @return UploadedFile|null Uploaded file metadata as UploadedFile or null.
      */
@@ -174,10 +181,10 @@ class FileUpload
     {
         if ($uploadedFile['error'] !== UPLOAD_ERR_NO_FILE) {
             $file = new UploadedFile(
-                    $uploadedFile['tmp_name'],
-                    $uploadedFile['name'],
-                    $uploadedFile['size'],
-                    $uploadedFile['error']
+                    (string) $uploadedFile['tmp_name'],
+                    (string) $uploadedFile['name'],
+                    (int) $uploadedFile['size'],
+                    (int) $uploadedFile['error']
             );
         } else {
             $file = null;

@@ -8,9 +8,11 @@
  * file that was distributed with this source code.
  */
 
-use PHPUnit\Framework\TestCase;
-use org\bovigo\vfs\vfsStream;
-use SemelaPavel\File\File;
+namespace SemelaPavel\UnitTests\File;
+
+use \PHPUnit\Framework\TestCase;
+use \org\bovigo\vfs\vfsStream;
+use \SemelaPavel\File\File;
 
 /**
  * @author Pavel Semela <semela_pavel@centrum.cz>
@@ -34,7 +36,7 @@ final class FileTest extends TestCase
     ];
     
     const FILE_CONTENT = 'Some random content of the virtual file.';
-    protected $file;
+    protected File $file;
     
     protected function setUp(): void
     {
@@ -46,17 +48,17 @@ final class FileTest extends TestCase
         $this->file = new File($vfsFile->url());
     }
     
-    public function testGetContentsFileNotFoundException()
+    public function testGetContentsFileNotFoundException(): void
     {
-        $this->expectException(SemelaPavel\File\Exception\FileNotFoundException::class);
+        $this->expectException(\SemelaPavel\File\Exception\FileNotFoundException::class);
         
         $file = new File('nonexistentfile.txt');
         $file->getContents();
     }
     
-    public function testGetContentsFileException()
+    public function testGetContentsFileException(): void
     {
-        $this->expectException(SemelaPavel\File\Exception\FileException::class);
+        $this->expectException(\SemelaPavel\File\Exception\FileException::class);
         $pattern = '/contents of the file(.*)cannot be read(.*)failed to open stream(.*)/i';
         $this->expectExceptionMessageMatches($pattern);
         
@@ -64,12 +66,12 @@ final class FileTest extends TestCase
         $this->file->getContents();
     }
     
-    public function testGetContents()
+    public function testGetContents(): void
     {
         $this->assertSame(self::FILE_CONTENT, $this->file->getContents());
     }
     
-    public function testGetMimeType()
+    public function testGetMimeType(): void
     {
         $invFile = new File('nonexistentfile.txt');
         
@@ -77,7 +79,7 @@ final class FileTest extends TestCase
         $this->assertSame(null, $invFile->getMimeType());
     }
     
-    public function fileNamesProvider()
+    public function fileNamesProvider(): array
     {
         return [
             ['file.txt', true],
@@ -92,13 +94,13 @@ final class FileTest extends TestCase
     /**
      * @dataProvider fileNamesProvider
      */
-    public function testHasValidName($fileName, $isValid)
+    public function testHasValidName(string $fileName, bool $isValid): void
     {
         $file = new File($fileName);
         $this->assertSame($isValid, $file->hasValidName());
     }
 
-    public function fileNameToRTrimProvider()
+    public function fileNameToRTrimProvider(): array
     {
         return [
             ['file.txt\ '],
@@ -115,19 +117,19 @@ final class FileTest extends TestCase
     /**
      * @dataProvider fileNameToRTrimProvider
      */
-    public function testRtrimFileName($fileName)
+    public function testRtrimFileName(string $fileName): void
     {
         $this->assertSame('file.txt', File::rtrimFileName($fileName));
     }
     
-    public function testRtrimFileNameASCII()
+    public function testRtrimFileNameASCII(): void
     {
         for ($i = 0; $i < 32; $i++) {
             $this->assertSame('file.txt', File::rtrimFileName('file.txt' . chr($i)));
         }
     }
     
-    public function longFileNameProvider()
+    public function longFileNameProvider(): array
     {
         return [
             'too long name' => [str_repeat('a', File::MAX_FILENAME_LENGTH) . 'a', false],
@@ -138,12 +140,12 @@ final class FileTest extends TestCase
     /**
      * @dataProvider longFileNameProvider
      */
-    public function testIsValidFileNameFilenameLength($fileName, $isValid)
+    public function testIsValidFileNameFilenameLength(string $fileName, bool $isValid): void
     {
         $this->assertSame($isValid, File::isValidFileName($fileName));
     }
     
-    public function testIsValidFileName()
+    public function testIsValidFileName(): void
     {
         // Reserved file names test
         foreach (self::RESERVED_FILENAMES as $fileName) {

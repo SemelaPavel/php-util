@@ -21,5 +21,18 @@ use SemelaPavel\Http\Exception\FileUploadException;
  */
 class NoFileUploadedException extends FileUploadException
 {
-    protected $message = 'No file was uploaded.';
+    /**
+     * Construct the exception.
+     * 
+     * @param string $message The Exception message to throw.
+     * @param int $code The Exception code.
+     * @param \Throwable $previous The previous exception used for the exception chaining.
+     */
+    public function __construct(
+        string $message = 'No file was uploaded.',
+        int $code = 0,
+        \Throwable $previous = null
+    ) {
+        parent::__construct($message, $code, $previous);
+    }
 }

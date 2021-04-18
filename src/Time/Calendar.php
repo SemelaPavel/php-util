@@ -59,7 +59,7 @@ class Calendar
      * @param \DateTimeInterface $date Starting date to search next workday.
      * @param Holidays $holidays ArrayAccess object that contains holidays.
      * 
-     * @return \DateTimeInterfacee Previous workday.
+     * @return \DateTimeInterface Previous workday.
      */
     public static function prevWorkday(\DateTimeInterface $date, Holidays $holidays = null): \DateTimeInterface
     {

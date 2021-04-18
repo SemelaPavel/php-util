@@ -40,7 +40,7 @@ class RegexPattern
     const DELIMITER = '~';
     
     /**
-     * @var array Pairs of PREG error codes and corresponding error messages. 
+     * @var array<int, string> Pairs of PREG error codes and corresponding error messages. 
      */
     protected static $errors = [
         \PREG_INTERNAL_ERROR => 'PCRE internal error occurred.',
@@ -75,7 +75,7 @@ class RegexPattern
      * 
      * @param string $regex The regular expression (without PCRE delimiter and modifiers).
      * @param int $flags A bit mask of match flags (PCRE modifiers).
-     * @param array $binds Values and their binds to a corresponding named placeholders.
+     * @param array<string, string> $binds Values and their binds to a corresponding named placeholders.
      */
     public function __construct(string $regex, int $flags = 0, array $binds = [])
     {
@@ -115,7 +115,7 @@ class RegexPattern
         $regexFlags = $caseFold ? self::CASE_INSENSITIVE : 0;
         $regex = static::globToRegex($pattern, $separator);
         
-        return new static('^' . $regex . '$', $regexFlags, []);
+        return new self('^' . $regex . '$', $regexFlags, []);
     }
     
     /**
@@ -124,7 +124,7 @@ class RegexPattern
      * 
      * @see RegexPattern::fromGlob()
      * 
-     * @param array $patterns An array of shell wildcard patterns.
+     * @param array<string> $patterns An array of shell wildcard patterns.
      * @param string $separator Directory structure separator(s).
      * @param bool $caseFold Enables case-insensitive matching if set to true.
      * 
@@ -142,7 +142,7 @@ class RegexPattern
             $regex .= '(^' . static::globToRegex($pattern, $separator) . '$)';
         }
         
-        return new static($regex, $regexFlags, []);
+        return new self($regex, $regexFlags, []);
     }
 
     /**
@@ -219,7 +219,7 @@ class RegexPattern
     {
         $warning = '';
         
-        set_error_handler(function ($errno, $errstr) use (&$warning) {$warning = $errstr;});
+        set_error_handler(function ($errno, $errstr) use (&$warning) {$warning = $errstr; return true;});
         $result = \preg_match($this->compiledPattern, $subject);
         restore_error_handler();
 
@@ -289,7 +289,7 @@ class RegexPattern
      * without a delimiter specified - the delimiter should be escaped later
      * in compile method.
      * 
-     * @param array $binds Values and their binds to a corresponding named placeholders.
+     * @param array<string, string> $binds Values and their binds to a corresponding named placeholders.
      * @param string $regex The regular expression (without PCRE delimiter and modifiers).
      * 
      * @return string Regex string with placeholders replaced by the given binds.

@@ -8,9 +8,11 @@
  * file that was distributed with this source code.
  */
 
-use PHPUnit\Framework\TestCase;
-use SemelaPavel\Object\Byte;
-use SemelaPavel\Object\Exception\ByteParseException;
+namespace SemelaPavel\UnitTests\Object;
+
+use \PHPUnit\Framework\TestCase;
+use \SemelaPavel\Object\Byte;
+use \SemelaPavel\Object\Exception\ByteParseException;
 
 /**
  * @author Pavel Semela <semela_pavel@centrum.cz>
@@ -20,7 +22,7 @@ use SemelaPavel\Object\Exception\ByteParseException;
  */
 final class ByteTest extends TestCase
 {
-    public function byteFromUnitProvider()
+    public function byteFromUnitProvider(): array
     {
         // input value, unit, output bytes
         return [
@@ -38,7 +40,7 @@ final class ByteTest extends TestCase
         ];
     }
     
-    public function byteFromUnitParseExceptionProvider()
+    public function byteFromUnitParseExceptionProvider(): array
     {
         return [
             [1, ''], [1, 'Byte'], [1, 'b'],
@@ -47,12 +49,12 @@ final class ByteTest extends TestCase
         ];
     }
     
-    public function byteFromUnitRangeExceptionProvider()
+    public function byteFromUnitRangeExceptionProvider(): array
     {
         return [[-1], [PHP_FLOAT_MAX]];
     }
     
-    public function parseProvider()
+    public function parseProvider(): array
     {
         return [
             [0, '0'],
@@ -69,7 +71,7 @@ final class ByteTest extends TestCase
         ];
     }
     
-    public function parseByteParseExceptionProvider()
+    public function parseByteParseExceptionProvider(): array
     {
         return [
             [''],
@@ -85,7 +87,7 @@ final class ByteTest extends TestCase
         ];
     }
     
-    public function parseRangeExceptionProvider()
+    public function parseRangeExceptionProvider(): array
     {
         return [
             ['9223372036854775808'],
@@ -93,7 +95,7 @@ final class ByteTest extends TestCase
         ];
     }
 
-    public function phpIniNotationProvider()
+    public function phpIniNotationProvider(): array
     {
         return [
             [0, '0'],
@@ -113,7 +115,7 @@ final class ByteTest extends TestCase
     /**
      * @dataProvider byteFromUnitProvider
      */
-    public function testFrom($input, $unit, $output)
+    public function testFrom(float $input, string $unit, int $output): void
     {
         $this->assertSame($output, (Byte::from($input, $unit))->getValue());
 
@@ -122,7 +124,7 @@ final class ByteTest extends TestCase
     /**
      * @dataProvider byteFromUnitParseExceptionProvider
      */
-    public function testFromByteParseException($value, $unit)
+    public function testFromByteParseException(float $value, string $unit): void
     {
         $this->expectException(ByteParseException::class);
         Byte::from($value, $unit);
@@ -131,7 +133,7 @@ final class ByteTest extends TestCase
     /**
      * @dataProvider byteFromUnitRangeExceptionProvider
      */
-    public function testFromRangeException($value)
+    public function testFromRangeException(float $value): void
     {
         $this->expectException(\RangeException::class);
         Byte::from($value, 'B');
@@ -140,7 +142,7 @@ final class ByteTest extends TestCase
     /**
      * @dataProvider parseProvider
      */
-    public function testParse($result, $input)
+    public function testParse(int $result, string $input): void
     {
         $this->assertSame($result, (Byte::parse($input))->getValue());
         
@@ -149,7 +151,7 @@ final class ByteTest extends TestCase
     /**
      * @dataProvider parseByteParseExceptionProvider
      */
-    public function testParseException($value)
+    public function testParseException(string $value): void
     {
         $this->expectException(ByteParseException::class);
         Byte::parse($value);
@@ -158,7 +160,7 @@ final class ByteTest extends TestCase
     /**
      * @dataProvider parseRangeExceptionProvider
      */
-    public function testParseRangeException($value)
+    public function testParseRangeException(string $value): void
     {
         $this->expectException(\RangeException::class);
         Byte::parse($value);
@@ -167,12 +169,12 @@ final class ByteTest extends TestCase
     /**
      * @dataProvider phpIniNotationProvider
      */
-    public function testFromPhpIniNotation($result, $input)
+    public function testFromPhpIniNotation(int $result, string $input): void
     {
         $this->assertSame($result, (Byte::fromPhpIniNotation($input))->getValue());
     }
     
-    public function testFloatValue()
+    public function testFloatValue(): void
     {
         $byte = new Byte(524281337);
         $this->assertSame(524281337.0, $byte->floatValue('B'));
@@ -189,7 +191,7 @@ final class ByteTest extends TestCase
     /**
      * @dataProvider byteFromUnitParseExceptionProvider
      */
-    public function testFloatValueException($byteValue, $unit)
+    public function testFloatValueException(int $byteValue, string $unit): void
     {
         $this->expectException(ByteParseException::class);
         $byte = new Byte($byteValue);
@@ -199,20 +201,19 @@ final class ByteTest extends TestCase
     /**
      * @dataProvider parseProvider
      */
-    public function testSet($value)
+    public function testSet(int $value): void
     {
-        $byte = new Byte(1);
-        $this->assertSame($value, $byte->setValue($value)->getValue());
+        $this->assertSame($value, (new Byte(1))->setValue($value)->getValue());
     }
 
-    public function testSetRangeException()
+    public function testSetRangeException(): void
     {
         $this->expectException(\RangeException::class);
         $byte = new Byte(1);
         $byte->setValue(-1);
     }
     
-    public function testToString()
+    public function testToString(): void
     {
         $byte = new Byte(524281337);
         $this->assertSame('524281337', (string) $byte);

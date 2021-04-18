@@ -32,7 +32,7 @@ use SemelaPavel\File\Exception\{FileException, InvalidFileNameException};
 class UploadedFile extends File
 {
     /**
-     * @var array Pairs of upload error codes and corresponding error messages. 
+     * @var array<int, string> Pairs of upload error codes and corresponding error messages. 
      */
     protected static array $errors = [
         \UPLOAD_ERR_INI_SIZE => 'The file "%s" exceeds the upload_max_filesize ini directive.',
@@ -159,7 +159,7 @@ class UploadedFile extends File
 
         $warning = 'The file is not a valid uploaded file.';
 
-        set_error_handler(function ($errno, $errstr) use (&$warning) { $warning = $errstr; });
+        set_error_handler(function ($errno, $errstr) use (&$warning) { $warning = $errstr; return true;});
         $isMoved = $this->moveUploadedFile($this->getPathname(), $targetPathName);
         restore_error_handler();
 
@@ -245,28 +245,28 @@ class UploadedFile extends File
                 break;
 
             case \UPLOAD_ERR_INI_SIZE:
-                throw new IniFileSizeException($this->getUploadErrMessage($this->error), $this->error);
+                throw new IniFileSizeException($this->getUploadErrMessage(), $this->error);
                 
             case \UPLOAD_ERR_FORM_SIZE:
-                throw new FormFileSizeException($this->getUploadErrMessage($this->error), $this->error);
+                throw new FormFileSizeException($this->getUploadErrMessage(), $this->error);
                 
             case \UPLOAD_ERR_PARTIAL:
-                throw new PartialFileException($this->getUploadErrMessage($this->error), $this->error);
+                throw new PartialFileException($this->getUploadErrMessage(), $this->error);
                 
             case \UPLOAD_ERR_NO_FILE:
-                throw new NoFileUploadedException($this->getUploadErrMessage($this->error), $this->error);
+                throw new NoFileUploadedException($this->getUploadErrMessage(), $this->error);
                 
             case \UPLOAD_ERR_NO_TMP_DIR:
-                throw new NoTmpDirException($this->getUploadErrMessage($this->error), $this->error);
+                throw new NoTmpDirException($this->getUploadErrMessage(), $this->error);
                 
             case \UPLOAD_ERR_CANT_WRITE:
-                throw new FileWriteException($this->getUploadErrMessage($this->error), $this->error);
+                throw new FileWriteException($this->getUploadErrMessage(), $this->error);
 
             case \UPLOAD_ERR_EXTENSION:
-                throw new UploadStoppedException($this->getUploadErrMessage($this->error), $this->error);
+                throw new UploadStoppedException($this->getUploadErrMessage(), $this->error);
                 
             default:
-                throw new FileUploadException($this->getUploadErrMessage($this->error), $this->error);
+                throw new FileUploadException($this->getUploadErrMessage(), $this->error);
         }
     }
     

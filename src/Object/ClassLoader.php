@@ -43,7 +43,7 @@ class ClassLoader
      * $prefixes['prefix1'][] = '/src';
      * $prefixes['prefix1'][] = '/src2';
      * 
-     * @var array Namespace prefixes and their paths.
+     * @var array<string, array{int, string}> Namespace prefixes and their paths.
      */
     protected array $prefixes = [];
     
@@ -53,7 +53,7 @@ class ClassLoader
      * 
      * $pLengths['p'][7];
      * 
-     * @var array
+     * @var array<string, array{int, bool}> Array of the first letters of the prefixes.
      */
     protected array $pLengths = [];
     
@@ -62,7 +62,7 @@ class ClassLoader
      * 
      * $directories[] = '/src';
      * 
-     * @var array 
+     * @var array<int, string> File paths.
      */
     protected array $directories = [];
     
@@ -99,7 +99,7 @@ class ClassLoader
      */
     public function register(): void
     {
-        spl_autoload_register(array($this, "loadClass"));
+        spl_autoload_register($this->getCallback("loadClass"));
     }
 
     /**
@@ -107,7 +107,7 @@ class ClassLoader
      */
     public function unRegister(): void
     {
-        spl_autoload_unregister(array($this, "loadClass"));
+        spl_autoload_unregister($this->getCallback("loadClass"));
     }
     
     /**
@@ -210,5 +210,22 @@ class ClassLoader
             
             return false;
         }
+    }
+    
+    /**
+     * Returns callable autoload function you can use in spl_autoload_ functions.
+     * 
+     * @param string $methodName Instance method name.
+     * 
+     * @return \Closure Callable autoload function.
+     */
+    protected function getCallback(string $methodName): \Closure
+    {
+        $controllerObject = $this;
+        $callback = function($class) use ($controllerObject, $methodName) {
+            $controllerObject->$methodName($class);
+        };
+        
+        return $callback;
     }
 }

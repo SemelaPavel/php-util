@@ -65,7 +65,7 @@ class Byte
      * e.g. Byte::from(1, 'KB') = Byte(1024)
      * e.g. Byte::from(1, 'KiB') = Byte(1024)
      * 
-     * @param int|float $value The value to be represented by the Byte.
+     * @param float $value The value to be represented by the Byte.
      * @param string $unit Binary unit in ISO/IEC 80000 or JEDEC standard.
      * 
      * @return Byte New Byte object.
@@ -81,7 +81,7 @@ class Byte
             throw new \RangeException('The value is out of range.');
         }
         
-        return new static((int) $byteValue);
+        return new self((int) $byteValue);
     }
     
     /**
@@ -118,7 +118,7 @@ class Byte
             return static::from((float) $matches[1], 'B');
              
         } else {
-            throw new ByteParseException('The given string cannot be parsed as a byte.');
+            throw new ByteParseException();
         }
     }
     
@@ -154,7 +154,7 @@ class Byte
             break;
         }
         
-        return new static($bytes);
+        return new self($bytes);
     }
     
     /**
@@ -181,11 +181,11 @@ class Byte
      * 
      * @param int $value The value to be represented by the Byte.
      * 
-     * @return Byte This instance.
+     * @return self This instance for methods chaining.
      * 
      * @throws \RangeException If the given value is out of range.
      */
-    public function setValue(int $value): Byte
+    public function setValue(int $value): self
     {
         if ($value < self::MIN_VALUE) {
             throw new \RangeException('The value is out of range.');

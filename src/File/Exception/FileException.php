@@ -17,4 +17,18 @@ namespace SemelaPavel\File\Exception;
  */
 class FileException extends \RuntimeException
 {
+    /**
+     * Construct the exception.
+     * 
+     * @param string $message The Exception message to throw.
+     * @param int $code The Exception code.
+     * @param \Throwable $previous The previous exception used for the exception chaining.
+     */
+    public function __construct(
+        string $message,
+        int $code = 0,
+        \Throwable $previous = null
+    ) {
+        parent::__construct($message, $code, $previous);
+    }
 }

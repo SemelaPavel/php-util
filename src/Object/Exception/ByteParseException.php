@@ -17,5 +17,18 @@ namespace SemelaPavel\Object\Exception;
  */
 class ByteParseException extends \RuntimeException
 {
-    protected $message = 'The given string or number cannot be parsed as a byte.';
+    /**
+     * Construct the exception.
+     * 
+     * @param string $message The Exception message to throw.
+     * @param int $code The Exception code.
+     * @param \Throwable $previous The previous exception used for the exception chaining.
+     */
+    public function __construct(
+        string $message = 'The given string or number cannot be parsed as a byte.',
+        int $code = 0,
+        \Throwable $previous = null
+    ) {
+        parent::__construct($message, $code, $previous);
+    }
 }

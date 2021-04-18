@@ -15,11 +15,9 @@ $tmpFiles = [];
             Select file to upload:
             <input type="file" name="filesArray[1D]" id="files"><br>
             Select file to upload:
-            <input type="file" name="filesArray[2D1][2D2]" id="files">
-            <br>
+            <input type="file" name="filesArray[2D1][2D2]" id="files"><br>
             Select file to upload:
-            <input type="file" name="filesArray[3D1][][3D3]" id="files">
-            <br>
+            <input type="file" name="filesArray[3D1][][3D3]" id="files"><br>
             <input type="submit" value="Upload files" name="upload_submit">
         </form>
     </p>

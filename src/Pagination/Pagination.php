@@ -59,12 +59,12 @@ class Pagination extends Paginator
      * 
      * @param int $outerRange Number of pages on left and right side of pagination bar.
      * @param int $innerRange Number of pages on left and right side of current page.
-     * @param string $gap Non-contiguous pages separator.
      * 
-     * @return array Pages numbers of pagination.
+     * @return array<int, array{'page': int|null, 'isCurrent': bool}> Pages numbers of pagination.
      */
-    public function toArray(int $outerRange = 1, int $innerRange = 2, ?string $gap = null): array
+    public function toArray(int $outerRange = 1, int $innerRange = 2): array
     {
+        $gap = null;
         $pages = [];
         
         $outerLeftEnd = min($this->numOfPages, $outerRange);
@@ -99,9 +99,9 @@ class Pagination extends Paginator
      * Returns array of pair of page number and boolean true if the page
      * is also current page, or false if not.
      * 
-     * @param int $page Page number.
+     * @param int|null $page Page number.
      * 
-     * @return array Pair of page number and current page boolean identifier.
+     * @return array{'page': int|null, 'isCurrent': bool} Pair of page number and current page boolean identifier.
      */
     protected function getPage(?int $page): array
     {

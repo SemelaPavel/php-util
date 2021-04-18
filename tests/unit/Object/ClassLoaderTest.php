@@ -8,8 +8,10 @@
  * file that was distributed with this source code.
  */
 
-use SemelaPavel\Object\ClassLoader;
-use PHPUnit\Framework\TestCase;
+namespace SemelaPavel\UnitTests\Object;
+
+use \SemelaPavel\Object\ClassLoader;
+use \PHPUnit\Framework\TestCase;
 
 /**
  * Mock ClassLoader does not require real files, but only tries
@@ -19,10 +21,10 @@ use PHPUnit\Framework\TestCase;
  */
 final class MockClassLoader extends ClassLoader
 {
-    protected $files = [];
+    protected array $files = [];
 
     /**
-     * @param array $files Full paths to the files that ClassLoader should find.
+     * @param array<int, string> $files Full paths to the files that ClassLoader should find.
      * @return void
      */
     public function setFiles(array $files): void
@@ -34,7 +36,7 @@ final class MockClassLoader extends ClassLoader
      * @param string $file Whole file path and file name. 
      * @return bool True if the file is found by ClassLoader.
      */
-    protected function requireFile($file): bool
+    protected function requireFile(string $file): bool
     {
         return in_array($file, $this->files);
     }
@@ -47,7 +49,7 @@ final class MockClassLoader extends ClassLoader
  */
 final class ClassLoaderTest extends TestCase
 {
-    protected $classLoader;
+    protected MockClassLoader $classLoader;
     
     protected function setUp(): void
     {
@@ -73,7 +75,7 @@ final class ClassLoaderTest extends TestCase
         $this->classLoader->setFiles($files);
     }
 
-    public function classesProvider()
+    public function classesProvider(): array
     {
         return [
             ['\Acme\Log\Writer\File_Writer', true],
@@ -94,7 +96,7 @@ final class ClassLoaderTest extends TestCase
     /**
      * @dataProvider classesProvider
      */
-    public function testLoadClass($class, $result)
+    public function testLoadClass(string $class, bool $result): void
     {
         $this->assertSame($result, $this->classLoader->loadClass($class));
     }

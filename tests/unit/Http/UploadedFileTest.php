@@ -8,10 +8,12 @@
  * file that was distributed with this source code.
  */
 
-use PHPUnit\Framework\TestCase;
-use SemelaPavel\Http\UploadedFile;
-use org\bovigo\vfs\vfsStream;
-            
+namespace SemelaPavel\UnitTests\Http;
+
+use \PHPUnit\Framework\TestCase;
+use \SemelaPavel\Http\UploadedFile;
+use \org\bovigo\vfs\vfsStream;
+
 /**
  * @author Pavel Semela <semela_pavel@centrum.cz>
  */
@@ -25,17 +27,17 @@ final class MockUploadedFile extends UploadedFile
     /**
      * @var bool True if pretend a file uploaded via HTTP.  
      */
-    public $isUploadedFile = true;
+    public bool $isUploadedFile = true;
     
     /**
      * @var bool True if pretend successful move of the uploaded file. 
      */
-    public $moveUploadedFileSuccess = true;
+    public bool $moveUploadedFileSuccess = true;
     
     /**
      * @var bool True if a warning when moving uploading file should be triggered.
      */
-    public $moveUploadedFileWarning = false;
+    public bool $moveUploadedFileWarning = false;
     
     protected function isUploadedFile(): bool
     {
@@ -78,17 +80,17 @@ final class UploadedFileTest extends TestCase
     const UERR1 = \UPLOAD_ERR_OK; // ValidMockFile upload error code
     const UERR2 = \UPLOAD_ERR_FORM_SIZE;
     
-    protected function getFile1()
+    protected function getFile1(): UploadedFile
     {
         return new UploadedFile(self::PATH1, self::NAME1, self::SIZE1, self::UERR1);
     }
     
-    protected function getFile2()
+    protected function getFile2(): UploadedFile
     {
         return new UploadedFile(self::PATH2, self::NAME2, self::SIZE2, self::UERR2);
     }
     
-    protected function getValidMockFile()
+    protected function getValidMockFile(): MockUploadedFile
     {
         return new MockUploadedFile(self::PATH2, self::NAME2, self::SIZE2, \UPLOAD_ERR_OK);
     }
@@ -101,7 +103,7 @@ final class UploadedFileTest extends TestCase
      * |-- upload/
      * |   |-- not_writable/
      */
-    protected function getVfs()
+    protected function getVfs(): \org\bovigo\vfs\vfsStreamDirectory
     {
         // File system root
         $fileSystem = vfsStream::setup('root');
@@ -123,7 +125,7 @@ final class UploadedFileTest extends TestCase
         return $fileSystem;
     }
     
-    public function clientFileNameProvider()
+    public function clientFileNameProvider(): array
     {
         return [
             ['file.txt', true],
@@ -136,21 +138,21 @@ final class UploadedFileTest extends TestCase
         ];
     }
     
-    public function uploadErrorExceptionProvider()
+    public function uploadErrorExceptionProvider(): array
     {
         return [
-            [\UPLOAD_ERR_INI_SIZE, SemelaPavel\Http\Exception\IniFileSizeException::class, '/upload_max_filesize/i'],
-            [\UPLOAD_ERR_FORM_SIZE, SemelaPavel\Http\Exception\FormFileSizeException::class, '/MAX_FILE_SIZE/i'],
-            [\UPLOAD_ERR_PARTIAL, SemelaPavel\Http\Exception\PartialFileException::class, '/partially/i'],
-            [\UPLOAD_ERR_NO_FILE, SemelaPavel\Http\Exception\NoFileUploadedException::class, '/No file/i'],
-            [\UPLOAD_ERR_NO_TMP_DIR, SemelaPavel\Http\Exception\NoTmpDirException::class, '/temporary folder/i'],
-            [\UPLOAD_ERR_CANT_WRITE, SemelaPavel\Http\Exception\FileWriteException::class, '/could not be written/i'],
-            [\UPLOAD_ERR_EXTENSION, SemelaPavel\Http\Exception\UploadStoppedException::class, '/extension/i'],
-            [123456789, SemelaPavel\Http\Exception\FileUploadException::class, '/unknown error/i']
+            [\UPLOAD_ERR_INI_SIZE, \SemelaPavel\Http\Exception\IniFileSizeException::class, '/upload_max_filesize/i'],
+            [\UPLOAD_ERR_FORM_SIZE, \SemelaPavel\Http\Exception\FormFileSizeException::class, '/MAX_FILE_SIZE/i'],
+            [\UPLOAD_ERR_PARTIAL, \SemelaPavel\Http\Exception\PartialFileException::class, '/partially/i'],
+            [\UPLOAD_ERR_NO_FILE, \SemelaPavel\Http\Exception\NoFileUploadedException::class, '/No file/i'],
+            [\UPLOAD_ERR_NO_TMP_DIR, \SemelaPavel\Http\Exception\NoTmpDirException::class, '/temporary folder/i'],
+            [\UPLOAD_ERR_CANT_WRITE, \SemelaPavel\Http\Exception\FileWriteException::class, '/could not be written/i'],
+            [\UPLOAD_ERR_EXTENSION, \SemelaPavel\Http\Exception\UploadStoppedException::class, '/extension/i'],
+            [123456789, \SemelaPavel\Http\Exception\FileUploadException::class, '/unknown error/i']
         ];
     }
     
-    public function notWritableDirectoryExceptionProvider()
+    public function notWritableDirectoryExceptionProvider(): array
     {
         // directory, FileException message regex
         return [
@@ -159,7 +161,7 @@ final class UploadedFileTest extends TestCase
         ];
     }
     
-    public function fileCouldNotBeMovedExceptionProvider()
+    public function fileCouldNotBeMovedExceptionProvider(): array
     {
         // moveUploadedFileSuccess, moveUploadedFileWarning, FileUploadException message regex
         return [
@@ -168,31 +170,31 @@ final class UploadedFileTest extends TestCase
         ];
     }
         
-    public function testGetPathName()
+    public function testGetPathName(): void
     {
         $this->assertSame(self::PATH1, $this->getFile1()->getPathname());
         $this->assertSame(self::PATH2, $this->getFile2()->getPathname());
     }
 
-    public function testGetClientFilename()
+    public function testGetClientFilename(): void
     {
         $this->assertSame(self::NAME1, $this->getFile1()->getClientFilename());
         $this->assertSame(self::NAME2, $this->getFile2()->getClientFilename());
     }
     
-    public function testGetSize()
+    public function testGetSize(): void
     {
         $this->assertSame(self::SIZE1, $this->getFile1()->getSize());
         $this->assertSame(self::SIZE2, $this->getFile2()->getSize());
     }
     
-    public function testGetError()
+    public function testGetError(): void
     {
         $this->assertSame(self::UERR1, $this->getFile1()->getError());
         $this->assertSame(self::UERR2, $this->getFile2()->getError());
     }
     
-    public function testIsUploaded()
+    public function testIsUploaded(): void
     {
         $this->assertFalse($this->getFile1()->isUploaded());
         $this->assertFalse($this->getFile2()->isUploaded());
@@ -207,7 +209,7 @@ final class UploadedFileTest extends TestCase
     /**
      * @dataProvider clientFileNameProvider
      */
-    public function testHasValidName($fileName, $isValid)
+    public function testHasValidName(string $fileName, bool $isValid): void
     {
         $file = new UploadedFile('/tmp/file.tmp', $fileName, 1024, \UPLOAD_ERR_OK);
         $this->assertSame($isValid, $file->hasValidName());
@@ -216,8 +218,9 @@ final class UploadedFileTest extends TestCase
     /**
      * @dataProvider uploadErrorExceptionProvider
      */
-    public function testUploadErrorException($errorCode, $exception, $msg)
+    public function testUploadErrorException(int $errorCode, string $exception, string $msg): void
     {
+        /** @phpstan-ignore-next-line */
         $this->expectException($exception);
         $this->expectExceptionMessageMatches($msg);
         
@@ -225,17 +228,17 @@ final class UploadedFileTest extends TestCase
         $file->move($this->getVfs()->getChild('upload')->url());
     }
     
-    public function testMoveInvalidClientFileNameException()
+    public function testMoveInvalidClientFileNameException(): void
     {
-        $this->expectException(SemelaPavel\File\Exception\InvalidFileNameException::class);
+        $this->expectException(\SemelaPavel\File\Exception\InvalidFileNameException::class);
         
         $file = new MockUploadedFile('/tmp/file.tmp', "file.php\x00.txt", 1024, \UPLOAD_ERR_OK);
         $file->move($this->getVfs()->getChild('upload')->url());
     }
     
-    public function testMoveInvalidNewFileNameException()
+    public function testMoveInvalidNewFileNameException(): void
     {
-        $this->expectException(SemelaPavel\File\Exception\InvalidFileNameException::class);
+        $this->expectException(\SemelaPavel\File\Exception\InvalidFileNameException::class);
         
         $file = $this->getValidMockFile();
         $file->move($this->getVfs()->getChild('upload')->url(), "file/.txt");
@@ -244,9 +247,9 @@ final class UploadedFileTest extends TestCase
     /**
      * @dataProvider notWritableDirectoryExceptionProvider
      */
-    public function testExceptionMoveToNotWritableDirectory($dir, $msg)
+    public function testExceptionMoveToNotWritableDirectory(string $dir, string $msg): void
     {
-        $this->expectException(SemelaPavel\File\Exception\FileException::class);
+        $this->expectException(\SemelaPavel\File\Exception\FileException::class);
         $this->expectExceptionMessageMatches($msg);
         
         $file = $this->getValidMockFile();
@@ -256,9 +259,12 @@ final class UploadedFileTest extends TestCase
     /**
      * @dataProvider fileCouldNotBeMovedExceptionProvider
      */
-    public function testfileCouldNotBeMovedException($moveUploadedFileSuccess, $moveUploadedFileWarning, $msg)
+    public function testfileCouldNotBeMovedException(
+        bool $moveUploadedFileSuccess,
+        bool $moveUploadedFileWarning,
+        string $msg): void
     {
-        $this->expectException(SemelaPavel\Http\Exception\FileUploadException::class);
+        $this->expectException(\SemelaPavel\Http\Exception\FileUploadException::class);
         $this->expectExceptionMessageMatches($msg);
         
         $file = $this->getValidMockFile();
@@ -270,15 +276,16 @@ final class UploadedFileTest extends TestCase
     /**
      * Tests moving of a valid uploaded file to the upload directory.
      */
-    public function testMoveToUploadDir()
+    public function testMoveToUploadDir(): void
     {
         $uplDir = $this->getVfs()->getChild('upload');
         $vldFile = $this->getValidMockFile();
        
         $file = $vldFile->move($uplDir->url());
+        /** @phpstan-ignore-next-line */
         $vfsFile = $uplDir->getChild(self::NAME2);
         
-        $this->assertTrue($file instanceof SemelaPavel\File\File);
+        $this->assertTrue($file instanceof \SemelaPavel\File\File);
         $this->assertTrue(is_file($file->getPathname()));
         $this->assertSame(0644, $vfsFile->getPermissions());
     }
@@ -286,7 +293,7 @@ final class UploadedFileTest extends TestCase
     /**
      * Tests moving of a valid uploaded file to the newly created directory.
      */
-    public function testMoveToNewDir()
+    public function testMoveToNewDir(): void
     {
         $uplDir = $this->getVfs()->getChild('upload');
         $vldFile = $this->getValidMockFile();
@@ -294,10 +301,11 @@ final class UploadedFileTest extends TestCase
         $newFileName = 'document.pdf';
 
         $file = $vldFile->move($uplDir->url() . DIRECTORY_SEPARATOR . $newDir . '/', $newFileName);
+        /** @phpstan-ignore-next-line */
         $targetDirNew = $uplDir->getChild($newDir);
         $vfsFile = $targetDirNew->getChild($newFileName);
         
-        $this->assertTrue($file instanceof SemelaPavel\File\File);
+        $this->assertTrue($file instanceof \SemelaPavel\File\File);
         $this->assertTrue(is_file($file->getPathname()));
         $this->assertSame(0777, $targetDirNew->getPermissions());
         $this->assertSame(0644, $vfsFile->getPermissions());

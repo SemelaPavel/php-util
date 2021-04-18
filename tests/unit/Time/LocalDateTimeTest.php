@@ -8,9 +8,11 @@
  * file that was distributed with this source code.
  */
 
-use PHPUnit\Framework\TestCase;
-use SemelaPavel\Time\Exception\DateTimeParseException;
-use SemelaPavel\Time\LocalDateTime;
+namespace SemelaPavel\UnitTests\Time;
+
+use \PHPUnit\Framework\TestCase;
+use \SemelaPavel\Time\Exception\DateTimeParseException;
+use \SemelaPavel\Time\LocalDateTime;
 
 /**
  * @author Pavel Semela <semela_pavel@centrum.cz>
@@ -23,9 +25,9 @@ final class LocalDateTimeTest extends TestCase
     const DATETIME_STR = '2020-07-06 13:37:00.001337';
     const TIMESTAMP = 1594042620;
     
-    protected $dateTime;
-    protected $tzDefault;
-    protected $tzLocal;
+    protected \DateTime $dateTime;
+    protected \DateTimeZone $tzDefault;
+    protected \DateTimeZone $tzLocal;
     
     protected function setUp(): void
     {
@@ -36,7 +38,7 @@ final class LocalDateTimeTest extends TestCase
         $this->tzLocal = new \DateTimeZone('Europe/Prague');
     }
     
-    public function testLocalTimeZone()
+    public function testLocalTimeZone(): void
     {
         $this->assertEquals($this->tzDefault, LocalDateTime::getLocalTimeZone());
         
@@ -46,7 +48,7 @@ final class LocalDateTimeTest extends TestCase
         $this->assertEquals($this->tzLocal, (new \DateTime())->getTimezone());
     }
     
-    public function testNow()
+    public function testNow(): void
     {
         $format = 'Y-m-d H:i';
         
@@ -66,13 +68,13 @@ final class LocalDateTimeTest extends TestCase
         );
     }
     
-    public function testNowInvalidArgumentException()
+    public function testNowInvalidArgumentException(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         LocalDateTime::now('not a valid format');
     }
     
-    public function testToday()
+    public function testToday(): void
     {
         $this->assertEquals(
             new \DateTime((new \DateTime())->format('Y-m-d')),
@@ -80,7 +82,7 @@ final class LocalDateTimeTest extends TestCase
         );
     }
     
-    public function testOfUnixTimestamp()
+    public function testOfUnixTimestamp(): void
     {
         $dateTime = new \DateTime('@' . self::TIMESTAMP);
         
@@ -97,7 +99,7 @@ final class LocalDateTimeTest extends TestCase
         );
     }
     
-    public function testNormalize()
+    public function testNormalize(): void
     {
         $this->assertSame(
             '2020-07-06T13:37:00.001337+01:00',
@@ -113,7 +115,7 @@ final class LocalDateTimeTest extends TestCase
         );
     }
     
-    public function testParseText()
+    public function testParseText(): void
     {
         $this->assertEquals( 
             $this->dateTime,
@@ -133,13 +135,13 @@ final class LocalDateTimeTest extends TestCase
         );
     }
     
-    public function testParseTextException()
+    public function testParseTextException(): void
     {
         $this->expectException(DateTimeParseException::class);
         LocalDateTime::parse('not a date');
     }
     
-    public function testParseFromFormat()
+    public function testParseFromFormat(): void
     {
         $localDateTimeFromFormat = LocalDateTime::parse(
             $this->dateTime->format('Y-m-d H:i:s.u'), 
@@ -152,7 +154,7 @@ final class LocalDateTimeTest extends TestCase
         );
     }
     
-    public function testParseFromFormatException()
+    public function testParseFromFormatException(): void
     {
         $this->expectException(DateTimeParseException::class);
         LocalDateTime::parse('not a date', 'Y-m-d H:i:s.u');

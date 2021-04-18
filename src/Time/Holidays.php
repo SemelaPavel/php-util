@@ -15,11 +15,13 @@ namespace SemelaPavel\Time;
  * some extra functionality e.g. calculation of some holiday dates as Easter.
  * 
  * @author Pavel Semela <semela_pavel@centrum.cz>
+ * 
+ * @implements \ArrayAccess<string, string>
  */
 class Holidays implements \ArrayAccess
 {
     /** 
-     * @var array Associative array of YYYY-MM-DD and holiday description. 
+     * @var array<string, string> Associative array of YYYY-MM-DD and holiday description. 
      */
     protected array $holidays = [];
 
@@ -29,12 +31,18 @@ class Holidays implements \ArrayAccess
      * @param int $year Year.
      * 
      * @return \DateTime Easter date.
+     * 
+     * @throws \RangeException If the given year value is out of range.
      */
     public static function easter(int $year): \DateTime
     {
         $base = \DateTime::createFromFormat("Y-m-d|", "{$year}-03-21");
         $days = easter_days($year);
-            
+        
+        if (!$base) {
+            throw new \RangeException('The year value is out of range.');
+        }
+        
         return $base->add(new \DateInterval("P{$days}D"));
     }
 
@@ -44,6 +52,8 @@ class Holidays implements \ArrayAccess
      * @param int $year Year.
      * 
      * @return \DateTime Good Friday date.
+     * 
+     * @throws \RangeException If the given year value is out of range.
      */
     public static function goodFriday(int $year): \DateTime
     {
@@ -56,6 +66,8 @@ class Holidays implements \ArrayAccess
      * @param int $year Year.
      * 
      * @return \DateTime Easter Monday date.
+     * 
+     * @throws \RangeException If the given year value is out of range.
      */
     public static function easterMonday(int $year): \DateTime
     {
@@ -128,7 +140,7 @@ class Holidays implements \ArrayAccess
     /**
      * Returns internal array of ArrayAccess Holidays object.
      * 
-     * @return array Internal array of ArrayAccess object.
+     * @return array<string, string> Internal array of ArrayAccess object.
      */
     public function toArray(): array
     {

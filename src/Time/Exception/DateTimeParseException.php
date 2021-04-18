@@ -17,5 +17,18 @@ namespace SemelaPavel\Time\Exception;
  */
 class DateTimeParseException extends \RuntimeException
 {
-    protected $message = 'The string cannot be parsed as a date-time.';
+    /**
+     * Construct the exception.
+     * 
+     * @param string $message The Exception message to throw.
+     * @param int $code The Exception code.
+     * @param \Throwable $previous The previous exception used for the exception chaining.
+     */
+    public function __construct(
+        string $message = 'The string cannot be parsed as a date-time.',
+        int $code = 0,
+        \Throwable $previous = null
+    ) {
+        parent::__construct($message, $code, $previous);
+    }
 }

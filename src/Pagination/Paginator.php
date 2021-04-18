@@ -169,11 +169,15 @@ class Paginator
      * Sets the total number of items and recalculate total number of pages.
      * 
      * @param int|null $numOfItems Total number of items to paginate.
+     * 
+     * @return self This instance for methods chaining.
      */
-    public function setNumOfItems(?int $numOfItems): void
+    public function setNumOfItems(?int $numOfItems): self
     {
         $this->numOfItems = max(0, (int) $numOfItems);
         $this->initNumOfPages();
+        
+        return $this;
     }
     
     /**
@@ -182,11 +186,15 @@ class Paginator
      * Maximum number of items is not limited.
      * 
      * @param int $itemsPerPage Maximum number of items to show per one page.
+     * 
+     * @return self This instance for methods chaining.
      */
-    public function setItemsPerPage(int $itemsPerPage): void
+    public function setItemsPerPage(int $itemsPerPage): self
     {
         $this->itemsPerPage = max(self::ITEMS_PER_PAGE_MIN, $itemsPerPage);
         $this->initNumOfPages();
+        
+        return $this;
     }
     
     /**
@@ -195,14 +203,18 @@ class Paginator
      * than number of total pages.
      * 
      * @param int $page The number of the current page.
+     * 
+     * @return self This instance for methods chaining.
      */
-    public function setCurrentPage(int $page): void
+    public function setCurrentPage(int $page): self
     {
         if ($this->numOfItems == 0) {
             $this->currentPage = self::FIRST_PAGE;
         } else {
             $this->currentPage = min(max(self::FIRST_PAGE, $page), $this->numOfPages);
         }
+        
+        return $this;
     }
 
     /**

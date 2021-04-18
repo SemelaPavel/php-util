@@ -89,12 +89,12 @@ use SemelaPavel\Object\Byte;
 
 <h3>&lt;class&gt; FileFilter</h3>
 <?php
-$filter = (new FileFilter())
-    ->setFileNameWhiteList(['*.jpg', '*.png', '*.gif'])
-    ->setFileNameBlackList(['*.php.*'])
-    ->setFileNameRegex(new \SemelaPavel\String\RegexPattern('^[^0-9]*$'))
-    ->setFileSize('>1 KB < 1 MB')
-    ->setMTime('>= 2021-01-01 < 2021-01-02 12:00');
+$filter = new FileFilter();
+$filter->setFileNameWhiteList(['*.jpg', '*.png', '*.gif']);
+$filter->setFileNameBlackList(['*.php.*']);
+$filter->setFileNameRegex(new \SemelaPavel\String\RegexPattern('^[^0-9]*$'));
+$filter->setFileSize('>1 KB < 1 MB');
+$filter->setMTime('>= 2021-01-01 < 2021-01-02 12:00');
 ?>
 <table style="border-collapse: collapse" border="1">
     <tr>

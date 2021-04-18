@@ -136,18 +136,13 @@ class LocalDateTime
      */
     public static function parse(string $text, string $format = null): \DateTime 
     {
-        try {
-            if ($format == null) {                
-                $dateTime = static::parseText($text);
-            } else {
-                $dateTime = static::parseFormat($text, $format);
-            }
-            
-            return $dateTime->setTimezone(static::getLocalTimeZone());
-            
-        } catch (DateTimeParseException $e) {
-            throw $e;
+        if ($format == null) {                
+            $dateTime = static::parseText($text);
+        } else {
+            $dateTime = static::parseFormat($text, $format);
         }
+            
+        return $dateTime->setTimezone(static::getLocalTimeZone());
     }
     
     /**
