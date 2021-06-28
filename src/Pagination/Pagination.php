@@ -13,7 +13,7 @@ namespace SemelaPavel\Pagination;
 use SemelaPavel\Pagination\Paginator;
 
 /**
- * Paginator class extension that adds method to get array of pages
+ * Paginator class extension that adds method to get an array of pages
  * for advanced pagination.
  * 
  * @author Pavel Semela <semela_pavel@centrum.cz>

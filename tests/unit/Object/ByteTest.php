@@ -178,11 +178,11 @@ final class ByteTest extends TestCase
     {
         $byte = new Byte(524281337);
         $this->assertSame(524281337.0, $byte->floatValue('B'));
-        $this->assertSame(511993.49, $byte->floatValue('KB'));
+        $this->assertSame(511993.4931640625, $byte->floatValue('KB'));
         $this->assertSame(511993.4932, $byte->floatValue('KiB', 4));
         $this->assertSame(499.994, $byte->floatValue(' MB ', 3));
-        $this->assertSame(499.99, $byte->floatValue('MiB'));
-        $this->assertSame(0.49, $byte->floatValue('GB'));
+        $this->assertSame(499.99, $byte->floatValue('MiB', 2));
+        $this->assertSame(0.49, $byte->floatValue('GB', 2));
         $this->assertSame(0.488, $byte->floatValue('  GiB ', 3));
         $this->assertSame(0.0004768311, $byte->floatValue('TB', 10));
         $this->assertSame(0.0004768311, $byte->floatValue('TiB', 10));

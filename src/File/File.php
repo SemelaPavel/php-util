@@ -14,7 +14,7 @@ use SemelaPavel\File\Exception\{FileNotFoundException, FileException};
 
 /**
  * An instance of this class represents a file in the file system.
- * 
+ *  
  * @author Pavel Semela <semela_pavel@centrum.cz>
  */
 class File extends \SplFileInfo
@@ -42,7 +42,8 @@ class File extends \SplFileInfo
     const RESERVED_CHARS = '\/|?*+(){}[]<>!@#$%&=:~`^,;"\'';
     
     /**
-     * Creates a new file object from the given file name or full path. 
+     * Creates a new file object from the given file name or full path.
+     * The file does not need to exist, or be readable.
      *  
      * @param string $fileName The file name or full path.
      */

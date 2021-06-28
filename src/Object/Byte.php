@@ -162,17 +162,18 @@ class Byte
      * to the other binary unit.
      * 
      * @param string $unit Binary unit in ISO/IEC 80000 or JEDEC standard.
-     * @param int $precision The number of decimals in the result.
+     * @param int|null $precision The number of decimals in the result or null for no rounding.
      * 
      * @return float The result of conversion of the bytes to the other binary unit.
      * 
      * @throws ByteParseException If the given binary unit cannot be recognised.
      */
-    public function floatValue(string $unit, int $precision = 2): float
+    public function floatValue(string $unit, ?int $precision = null): float
     {
         $byteValue = static::byteValueOfUnit($unit);
+        $floatValue = $this->value / $byteValue;
         
-        return (float) round($this->value / $byteValue, $precision);
+        return (float) ($precision === null ? $floatValue : round($floatValue, $precision));
     }
 
     /**
